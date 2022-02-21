@@ -56,7 +56,7 @@ namespace next4_api.Controllers
         }
 
         ///<summary>
-        ///Realiza o login por name
+        ///Realiza o login por email
         ///</summary>
         /// <param name="user">objeto User com login e password</param>
         /// <returns>UserToken</returns>
