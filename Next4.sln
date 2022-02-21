@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "next4-api", "next4-api\next4-api.csproj", "{711E5E5B-F308-4C72-BADB-49623142D873}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "next4-api-tests", "next4-api-tests\next4-api-tests.csproj", "{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -33,5 +35,17 @@ Global
 		{711E5E5B-F308-4C72-BADB-49623142D873}.Release|x64.Build.0 = Release|Any CPU
 		{711E5E5B-F308-4C72-BADB-49623142D873}.Release|x86.ActiveCfg = Release|Any CPU
 		{711E5E5B-F308-4C72-BADB-49623142D873}.Release|x86.Build.0 = Release|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Debug|x64.Build.0 = Debug|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Debug|x86.Build.0 = Debug|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Release|x64.ActiveCfg = Release|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Release|x64.Build.0 = Release|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Release|x86.ActiveCfg = Release|Any CPU
+		{3AD237D6-F091-4B59-B9AF-909DA6CE52DF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

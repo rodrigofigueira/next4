@@ -75,7 +75,6 @@ namespace next4_api.Controllers
 
         }
 
-
         ///<summary>
         ///Pesquisa o usuário por id
         ///</summary>

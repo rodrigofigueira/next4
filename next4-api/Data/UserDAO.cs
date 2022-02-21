@@ -9,8 +9,7 @@ using System.Collections.Generic;
 namespace next4_api.Data
 {
     public class UserDAO : Connection
-    {
-        
+    {       
         public async Task<User> Post(UserPost userPost){
 
             await connection.OpenAsync();
@@ -340,6 +339,29 @@ namespace next4_api.Data
 
         }
 
+        public async Task<bool> EmailExists(string email){
+            
+            await connection.OpenAsync();
+            var command = new SqlCommand(@"SELECT count(*) FROM snna_users WHERE email = @email", connection);
+            int total;
+            try{
+                
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@email", email);
+                total = Convert.ToInt32(await command.ExecuteScalarAsync());                                                
+            }
+            catch(Exception ex){
+                throw ex;
+            }
+            finally{
+                await connection.CloseAsync();
+            }
+
+            if(total > 0) return true;
+
+            return false;
+
+        }
 
     }
 }
