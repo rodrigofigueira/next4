@@ -15,6 +15,8 @@ namespace next4_api.Controllers
         ///<summary>
         ///Cria novo usuário
         ///</summary>
+        /// <param name="user">objeto User com name, email e password</param>
+        /// <returns>UserToken</returns>
         [HttpPost]
         public async Task<ActionResult<UserToken>> Post([FromBody] UserPost user){
 
@@ -33,6 +35,11 @@ namespace next4_api.Controllers
             });
         }
 
+        ///<summary>
+        ///Realiza o login por name
+        ///</summary>
+        /// <param name="user">objeto User com username e password</param>
+        /// <returns>UserToken</returns>
         [HttpPost]
         [Route("login/byusername")]
         public async Task<ActionResult<UserToken>> LoginByName([FromBody] UserLoginByName user){
@@ -48,6 +55,11 @@ namespace next4_api.Controllers
 
         }
 
+        ///<summary>
+        ///Realiza o login por name
+        ///</summary>
+        /// <param name="user">objeto User com login e password</param>
+        /// <returns>UserToken</returns>
         [HttpPost]
         [Route("login/byemail")]
         public async Task<ActionResult<UserToken>> LoginByEmail([FromBody] UserLoginByEmail user){
@@ -63,6 +75,12 @@ namespace next4_api.Controllers
 
         }
 
+
+        ///<summary>
+        ///Pesquisa o usuário por id
+        ///</summary>
+        /// <param name="id">Id do usuário</param>
+        /// <returns>User</returns>
         [Authorize]
         [HttpGet]
         [Route("{id}")]
@@ -73,6 +91,12 @@ namespace next4_api.Controllers
             return Ok(user);
         }
 
+
+        ///<summary>
+        ///Pesquisa usuários por username
+        ///</summary>
+        /// <param name="name">Texto para realizar a pesquisa</param>
+        /// <returns>Lista de User</returns>
         [Authorize]
         [HttpGet]
         [Route("getbyname/{name}")]
@@ -82,6 +106,11 @@ namespace next4_api.Controllers
             return Ok(users);
         }
 
+        ///<summary>
+        ///Atualiza a senha do usuário
+        ///</summary>
+        /// <param name="user">objeto User com login e password</param>
+        /// <returns>UserToken</returns>
         [Authorize]
         [HttpPut]
         [Route("password")]
@@ -95,6 +124,11 @@ namespace next4_api.Controllers
 
         }
 
+        ///<summary>
+        ///Update Usuário
+        ///</summary>
+        /// <param name="user">objeto User com todos os campos, exceto password</param>
+        /// <returns>Apenas mensagem de sucesso ou erro</returns>        
         [Authorize]
         [HttpPut]
         public async Task<ActionResult> Update([FromBody] UserPut user){
@@ -105,6 +139,11 @@ namespace next4_api.Controllers
             return Ok("Usuário atualizado com sucesso.");
         }
 
+        ///<summary>
+        ///Deleta Usuário
+        ///</summary>
+        /// <param name="id">Id do usuário que será deletado</param>
+        /// <returns>Apenas mensagem de sucesso ou erro</returns>        
         [Authorize]
         [HttpDelete]
         [Route("{id}")]
