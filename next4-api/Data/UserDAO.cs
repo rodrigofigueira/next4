@@ -192,7 +192,7 @@ namespace next4_api.Data
 
         }
 
-        public async Task<List<UserGet>> GetUsersByName(string name){
+        public async Task<List<UserGet>> GetListByNameStartsWith(string name){
 
             await connection.OpenAsync();
 
@@ -348,6 +348,126 @@ namespace next4_api.Data
                 
                 command.Parameters.Clear();
                 command.Parameters.AddWithValue("@email", email);
+                total = Convert.ToInt32(await command.ExecuteScalarAsync());                                                
+            }
+            catch(Exception ex){
+                throw ex;
+            }
+            finally{
+                await connection.CloseAsync();
+            }
+
+            if(total > 0) return true;
+
+            return false;
+
+        }
+
+        public async Task<bool> NameExists(string name){
+            
+            await connection.OpenAsync();
+            var command = new SqlCommand(@"SELECT count(*) FROM snna_users WHERE name_view = @name", connection);
+            int total;
+            try{
+                
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@name", name);
+                total = Convert.ToInt32(await command.ExecuteScalarAsync());                                                
+            }
+            catch(Exception ex){
+                throw ex;
+            }
+            finally{
+                await connection.CloseAsync();
+            }
+
+            if(total > 0) return true;
+
+            return false;
+
+        }
+
+        public async Task<List<UserGet>> GetListByEmailStartsWith(string email){
+           
+            await connection.OpenAsync();
+
+            string query = @"SELECT [id]
+                                ,[name_view]
+                                ,[email]
+                                ,[dt_created]
+                                ,[dt_update] FROM [next4].[dbo].[snna_users] 
+                                where email like @email";
+
+            var command = new SqlCommand(query, connection);
+            List<UserGet> users = new List<UserGet>();
+
+            try{
+                command.Parameters.Clear();
+                
+                command.Parameters.Add("@email", SqlDbType.VarChar);
+                command.Parameters["@email"].Value = email + "%";
+
+                SqlDataReader userFromDB = await command.ExecuteReaderAsync();
+
+                if (userFromDB.HasRows == false) return users;
+
+                while(userFromDB.Read()){
+                    UserGet user = new UserGet();
+                    user.Id = Convert.ToInt32(userFromDB["id"]);
+                    user.Name = Convert.ToString(userFromDB["name_view"]);
+                    user.Email = Convert.ToString(userFromDB["email"]);
+                    user.CreatedAt = Convert.ToDateTime(userFromDB["dt_created"]);
+                    user.UpdatedAt = Convert.ToDateTime(userFromDB["dt_update"]);
+                    users.Add(user);
+                }
+
+            }
+            catch(Exception ex){
+                throw ex;
+            }
+            finally{
+                await connection.CloseAsync();
+            }
+            
+            return users;
+
+        }
+
+        public async Task<bool> NameExistsWithIdNotEqualsTo(string name, int id){
+
+            await connection.OpenAsync();
+            var command = new SqlCommand(@"SELECT count(*) FROM snna_users WHERE name_view = @name and id <> @id", connection);
+            int total;
+            try{
+                
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@name", name);
+                command.Parameters.AddWithValue("@id", id);
+                total = Convert.ToInt32(await command.ExecuteScalarAsync());                                                
+            }
+            catch(Exception ex){
+                throw ex;
+            }
+            finally{
+                await connection.CloseAsync();
+            }
+
+            if(total > 0) return true;
+
+            return false;
+
+        }
+
+        public async Task<bool> EmailExistsWithIdNotEqualsTo(string email, int id){
+
+            await connection.OpenAsync();
+            var command = new SqlCommand(@"SELECT count(*) FROM snna_users WHERE email = @email and id <> @id", connection);
+            int total;
+            try{
+                
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@email", email);
+                command.Parameters.AddWithValue("@id", id);
                 total = Convert.ToInt32(await command.ExecuteScalarAsync());                                                
             }
             catch(Exception ex){

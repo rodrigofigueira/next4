@@ -6,6 +6,7 @@ using next4_api.Data;
 using next4_api.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Web;
 
 namespace next4_api.Controllers
 {
@@ -20,14 +21,14 @@ namespace next4_api.Controllers
         [HttpPost]
         public async Task<ActionResult<UserToken>> Post([FromBody] UserPost user){
 
-            User _user = new User{
-                Name = user.Name,
-                Email = user.Email,
-                Password = user.Password
-            };
-
             UserDAO userDAO = new UserDAO();
-            _user = await userDAO.Post(user);
+
+            if(await userDAO.NameExists(user.Name)) return BadRequest("Nome já existe");
+            if(await userDAO.EmailExists(user.Email)) return BadRequest("Email já existe");
+
+            var _user = await userDAO.Post(user);
+
+            if(_user == null) return StatusCode(500, "Erro ao gravar!");
 
             return Ok(new UserToken{
                 Name = _user.Name,
@@ -100,10 +101,25 @@ namespace next4_api.Controllers
         [HttpGet]
         [Route("getbyname/{name}")]
         public async Task<ActionResult<List<UserGet>>> GetByName([FromRoute] string name){
-            var users = await new UserDAO().GetUsersByName(name);
+            var users = await new UserDAO().GetListByNameStartsWith(name);
             if(users == null || users.Count == 0) return BadRequest("Usuário não encontrado");
             return Ok(users);
         }
+
+        ///<summary>
+        ///Pesquisa usuários por email
+        ///</summary>
+        /// <param name="email">Texto para realizar a pesquisa</param>
+        /// <returns>Lista de User</returns>
+        [Authorize]
+        [HttpGet]
+        [Route("getbyemail/{email}")]
+        public async Task<ActionResult<List<UserGet>>> GetByEmail([FromRoute] string email){
+            var users = await new UserDAO().GetListByEmailStartsWith(email);
+            if(users == null || users.Count == 0) return BadRequest("Usuário não encontrado");
+            return Ok(users);
+        }
+
 
         ///<summary>
         ///Atualiza a senha do usuário
@@ -131,7 +147,16 @@ namespace next4_api.Controllers
         [Authorize]
         [HttpPut]
         public async Task<ActionResult> Update([FromBody] UserPut user){
-            bool userUpdated = await new UserDAO().Update(user);
+
+            UserDAO userDAO = new UserDAO();
+
+            if(await userDAO.EmailExistsWithIdNotEqualsTo(user.Email, user.Id))
+                return BadRequest("Email já existe");
+
+            if(await userDAO.NameExistsWithIdNotEqualsTo(user.Name, user.Id))
+                return BadRequest("Nome já existe");
+
+            bool userUpdated = await userDAO.Update(user);
 
             if(userUpdated == false) return BadRequest("Não foi possível realizar a atualização");
 
