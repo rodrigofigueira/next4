@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+using next4_api.Data;
 
 namespace next4_api
 {
@@ -26,8 +29,10 @@ namespace next4_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            //services.AddEndpointsApiExplorer();
+
+            var connection = Configuration["SqlConnection:SqlConnectionString"];
+            services.AddDbContext<DataContext>(options => options.UseSqlServer(connection));
+
             services.AddSwaggerGen(c =>{
                 c.SwaggerDoc("v1", new OpenApiInfo{ Title="Next4", Version = "v1"});                
 
