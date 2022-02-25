@@ -157,13 +157,19 @@ namespace next4_api.Repository
 
         }
 
+        public async Task<bool> UpdatePassword(UserPutPassword user){
 
+            User _user = await _context.Users.Where(u => u.Id == user.Id).FirstOrDefaultAsync();
 
+            _user.Password = BC.HashPassword(user.NewPassword);
 
+            _context.Users.Update(_user);
 
-        //public async Task<UserGet> GetByUsernameAndPassword(string name, string password)
+            int atualizou = await _context.SaveChangesAsync();
 
-        //public async Task<bool> UpdatePassword(UserPutPassword user)
+            return atualizou > 0 ? true : false;
+
+        }
 
         //public async Task<bool> Update(UserPut user)
 

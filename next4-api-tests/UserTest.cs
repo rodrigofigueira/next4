@@ -258,7 +258,6 @@ namespace next4_api_tests
         [TestMethod]
         public async Task TestLoginByUsernameAndPassword(){
 
-
             string password = "1";
 
             User user = await userRepository.Post(new UserPost{
@@ -273,6 +272,34 @@ namespace next4_api_tests
 
             Assert.IsNotNull(userLogin);
 
+
+        }
+
+        [TestMethod]
+        public async Task TestUpdatePassword(){
+
+            string name = "TestUpdatePassword";
+
+            User user = await userRepository.Post(new UserPost{
+                Name = name,
+                Email = "TestUpdatePassword@email.com",
+                Password = "1"
+            });            
+
+            await userRepository.UpdatePassword(new UserPutPassword{
+                Id = user.Id,
+                NewPassword = "2"
+            });
+
+            UserToken userToken = await userRepository.GetByUsernameAndPassword(name, "2");
+            
+            userRepository.Clear();
+
+            await userRepository.Delete(new User{
+                Id = user.Id
+            });
+
+            Assert.IsNotNull(userToken);
 
         }
 
