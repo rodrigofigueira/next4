@@ -10,6 +10,7 @@ namespace next4_api.Data
 {
     public class UserDAO : Connection
     {       
+        //feito
         public async Task<User> Post(UserPost userPost){
 
             await connection.OpenAsync();
@@ -49,6 +50,7 @@ namespace next4_api.Data
 
         }
 
+        //feito
         public async Task<UserGet> GetById(int id){
 
             await connection.OpenAsync();
@@ -91,7 +93,7 @@ namespace next4_api.Data
             return user;
 
         }        
-
+        
         public async Task<UserGet> GetByUsernameAndPassword(string name, string password){
 
             await connection.OpenAsync();
@@ -142,6 +144,7 @@ namespace next4_api.Data
 
         }
 
+        //feito
         public async Task<UserGet> GetByEmailAndPassword(string email, string password){
 
             await connection.OpenAsync();
@@ -314,6 +317,7 @@ namespace next4_api.Data
 
         }
 
+        //feito
         public async Task<bool> Delete(int id){
             await connection.OpenAsync();
 
@@ -339,6 +343,7 @@ namespace next4_api.Data
 
         }
 
+        //feito
         public async Task<bool> EmailExists(string email){
             
             await connection.OpenAsync();
@@ -362,7 +367,8 @@ namespace next4_api.Data
             return false;
 
         }
-
+        
+        //feito
         public async Task<bool> NameExists(string name){
             
             await connection.OpenAsync();
@@ -433,6 +439,7 @@ namespace next4_api.Data
 
         }
 
+        //feito
         public async Task<bool> NameExistsWithIdNotEqualsTo(string name, int id){
 
             await connection.OpenAsync();
@@ -458,6 +465,7 @@ namespace next4_api.Data
 
         }
 
+        //feito
         public async Task<bool> EmailExistsWithIdNotEqualsTo(string email, int id){
 
             await connection.OpenAsync();

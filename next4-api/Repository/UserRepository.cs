@@ -20,6 +20,7 @@ namespace next4_api.Repository
             _context = context;
         }
 
+        //ver como gravar passando uma lista
         public async Task<User> Post(UserPost userPost){
 
             DateTime now = DateTime.Now;
@@ -30,10 +31,16 @@ namespace next4_api.Repository
                 Password = BC.HashPassword(userPost.Password),
                 CreatedAt = now,
                 UpdatedAt = now
-            };
+            };            
 
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            
+            try{
+                await _context.SaveChangesAsync();
+            }catch(Exception ex){
+                this.Clear();
+                throw ex;
+            }
             
             return user;
 
@@ -58,10 +65,20 @@ namespace next4_api.Repository
 
         public async Task<bool> Delete(User user){
 
-            _context.Users.Remove(user);
+            _context.Users.Remove(user);            
             int changes = await _context.SaveChangesAsync();
             return changes > 0 ? true : false;
 
+        }
+
+        public async Task<bool> DeleteRange(List<User> users){
+            _context.Users.RemoveRange(users);            
+            int changes = await _context.SaveChangesAsync();
+            return changes > 0 ? true : false;
+        }
+
+        public void Clear(){
+            _context.Users.Local.Clear();
         }
 
         public async Task<UserGet> GetById(int id){
@@ -78,7 +95,41 @@ namespace next4_api.Repository
                 UpdatedAt = user.UpdatedAt
             };
 
+        }        
+
+        public async Task<List<UserGet>> GetListByNameStartsWith(string name){
+            
+            var users = await _context.Users.Where(u => u.Name.StartsWith(name)).ToListAsync();
+
+            List<UserGet> userGets = new List<UserGet>();
+
+            foreach (User user in users)
+            {
+                userGets.Add(new UserGet{
+                    Id = user.Id,
+                    CreatedAt = user.CreatedAt,
+                    Email = user.Email,
+                    Name = user.Name,
+                    UpdatedAt = user.UpdatedAt
+                });
+            }
+
+            return userGets;
+
         }
+
+
+
+
+
+        //public async Task<UserGet> GetByUsernameAndPassword(string name, string password)
+
+        //public async Task<bool> UpdatePassword(UserPutPassword user)
+
+        //public async Task<bool> Update(UserPut user)
+
+        //public async Task<List<UserGet>> GetListByEmailStartsWith(string email)
+
 
     }
 }

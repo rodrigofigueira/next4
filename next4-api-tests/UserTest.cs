@@ -7,6 +7,7 @@ using System.Linq;
 using next4_api.Models;
 using next4_api.Repository;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace next4_api_tests
 {
@@ -90,6 +91,117 @@ namespace next4_api_tests
             await userRepository.Delete(user);
             
             Assert.IsNotNull(userFromBD);
+
+        }
+
+        [TestMethod]
+        public async Task TestNameIsUnique(){
+
+            User user1 = null;
+
+            try{
+
+                user1 = await userRepository.Post(new UserPost{
+                                Email = "TestNameIsUnique1@gmail.com",
+                                Name = "TestNameIsUnique",
+                                Password = "1"                
+                            });            
+
+                var user2 = await userRepository.Post(new UserPost{
+                                Email = "TestNameIsUnique2@gmail.com",
+                                Name = "TestNameIsUnique",
+                                Password = "1"                
+                            });                            
+
+            }catch(Exception ex){
+                if(ex.InnerException != null){
+                    Assert.IsTrue(ex.InnerException.Message.Contains("NameIsUnique"));
+                }
+            }
+            finally{
+                await userRepository.Delete(user1);
+            }
+
+
+        }
+       
+        [TestMethod]
+        public async Task TestEmailIsUnique(){
+
+            User user1 = null;
+
+            try{
+
+                user1 = await userRepository.Post(new UserPost{
+                                Email = "TestEmailIsUnique@gmail.com",
+                                Name = "TestEmailIsUnique1",
+                                Password = "1"                
+                            });            
+
+                var user2 = await userRepository.Post(new UserPost{
+                                Email = "TestEmailIsUnique@gmail.com",
+                                Name = "TestEmailIsUnique2",
+                                Password = "1"                
+                            });                            
+
+            }catch(Exception ex){
+                if(ex.InnerException != null){
+                    Assert.IsTrue(ex.InnerException.Message.Contains("EmailIsUnique"));
+                }
+            }
+            finally{
+                await userRepository.Delete(user1);
+            }
+
+        }
+
+        [TestMethod]
+        public async Task TestGetListByNameStartsWith()
+        {
+
+            List<UserPost> usersForPost = new List<UserPost>();
+                        
+            usersForPost.Add(new UserPost{
+                Email = "usersForPost1@gmail.com",
+                Name = "usersForPost1",
+                Password = "1"
+            });
+
+            usersForPost.Add(new UserPost{
+                Email = "usersForPost2@gmail.com",
+                Name = "usersForPost2",
+                Password = "1"
+            });
+
+            usersForPost.Add(new UserPost{
+                Email = "usersForPost3@gmail.com",
+                Name = "usersForPost3",
+                Password = "1"
+            });
+            
+            foreach (UserPost userPost in usersForPost)
+            {
+                await userRepository.Post(userPost);
+            }
+            
+            string name = "usersForPost";
+
+            List<UserGet> users = await userRepository.GetListByNameStartsWith(name);
+
+            int total = users.Where(u => u.Name.StartsWith(name)).Count();
+
+            userRepository.Clear();
+
+            List<User> usersToRemove = new List<User>();
+            
+            foreach (UserGet userGet in users)
+            {
+                usersToRemove.Add(new User{Id = userGet.Id});
+            }            
+
+            await userRepository.DeleteRange(usersToRemove);
+
+            Assert.IsTrue(total >= 3);
 
         }
 
