@@ -205,5 +205,55 @@ namespace next4_api_tests
 
         }
 
+        [TestMethod]
+        public async Task TestGetListByEmailStartsWith()
+        {
+
+            List<UserPost> usersForPost = new List<UserPost>();
+                        
+            usersForPost.Add(new UserPost{
+                Email = "TestGetListByEmailStartsWith1@gmail.com",
+                Name = "TestGetListByEmailStartsWith1",
+                Password = "1"
+            });
+
+            usersForPost.Add(new UserPost{
+                Email = "TestGetListByEmailStartsWith2@gmail.com",
+                Name = "TestGetListByEmailStartsWith2",
+                Password = "1"
+            });
+
+            usersForPost.Add(new UserPost{
+                Email = "TestGetListByEmailStartsWith3@gmail.com",
+                Name = "TestGetListByEmailStartsWith3",
+                Password = "1"
+            });
+            
+            foreach (UserPost userPost in usersForPost)
+            {
+                await userRepository.Post(userPost);
+            }
+            
+            string email = "TestGetListByEmailStartsWith";
+
+            List<UserGet> users = await userRepository.GetListByEmailStartsWith(email);
+
+            int total = users.Where(u => u.Email.StartsWith(email)).Count();
+
+            userRepository.Clear();
+
+            List<User> usersToRemove = new List<User>();
+            
+            foreach (UserGet userGet in users)
+            {
+                usersToRemove.Add(new User{Id = userGet.Id});
+            }            
+
+            await userRepository.DeleteRange(usersToRemove);
+
+            Assert.IsTrue(total >= 3);
+
+        }
+
     }
 }

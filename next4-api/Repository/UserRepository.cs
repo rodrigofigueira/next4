@@ -118,6 +118,27 @@ namespace next4_api.Repository
 
         }
 
+        public async Task<List<UserGet>> GetListByEmailStartsWith(string email){
+            
+            var users = await _context.Users.Where(u => u.Email.StartsWith(email)).ToListAsync();
+
+            List<UserGet> userGets = new List<UserGet>();
+
+            foreach (User user in users)
+            {
+                userGets.Add(new UserGet{
+                    Id = user.Id,
+                    CreatedAt = user.CreatedAt,
+                    Email = user.Email,
+                    Name = user.Name,
+                    UpdatedAt = user.UpdatedAt
+                });
+            }
+
+            return userGets;
+
+        }
+
 
 
 
@@ -127,8 +148,6 @@ namespace next4_api.Repository
         //public async Task<bool> UpdatePassword(UserPutPassword user)
 
         //public async Task<bool> Update(UserPut user)
-
-        //public async Task<List<UserGet>> GetListByEmailStartsWith(string email)
 
 
     }
