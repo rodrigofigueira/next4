@@ -255,5 +255,26 @@ namespace next4_api_tests
 
         }
 
+        [TestMethod]
+        public async Task TestLoginByUsernameAndPassword(){
+
+
+            string password = "1";
+
+            User user = await userRepository.Post(new UserPost{
+                Email = "TestLoginByUsernameAndPassword@gmail.com",
+                Name = "TestLoginByUsernameAndPassword",
+                Password = password            
+            });                        
+
+            var userLogin = await userRepository.GetByUsernameAndPassword(user.Name, password);
+
+            await userRepository.Delete(user);
+
+            Assert.IsNotNull(userLogin);
+
+
+        }
+
     }
 }

@@ -63,6 +63,24 @@ namespace next4_api.Repository
 
         }        
 
+        public async Task<UserToken> GetByUsernameAndPassword(string username, string password){
+
+            var userFromBD = await _context.Users.Where(u => u.Name.Equals(username))
+                                                  .FirstOrDefaultAsync();
+
+            if(userFromBD == null 
+               || !BC.Verify(password, userFromBD.Password)
+            ) 
+            return null;
+
+            return new UserToken{
+                Name = userFromBD.Name,
+                Token = new TokenService().CreateToken(userFromBD.Name)
+            };
+
+        }        
+
+
         public async Task<bool> Delete(User user){
 
             _context.Users.Remove(user);            
