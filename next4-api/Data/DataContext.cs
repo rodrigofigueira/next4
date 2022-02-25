@@ -8,13 +8,7 @@ namespace next4_api.Data
 
         public DataContext(DbContextOptions options) : base(options){}
 
-        public DbSet<User> Users { get; set; }
-
-        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){
-        //     optionsBuilder.UseSqlServer(
-        //         connectionString:@"Persist Security Info=False;server=.\SQLEXPRESS2019;database=next4;uid=sa;pwd=sql339023"
-        //     );
-        // }
+        public DbSet<User> Users { get; set; }        
 
     }
 }
