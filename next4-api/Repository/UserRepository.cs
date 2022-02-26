@@ -171,7 +171,19 @@ namespace next4_api.Repository
 
         }
 
-        //public async Task<bool> Update(UserPut user)
+        public async Task<bool> Update(UserPut user){
+
+            User _user = await _context.Users.Where(u => u.Id == user.Id).FirstOrDefaultAsync();
+            _user.UpdatedAt = DateTime.Now;
+            _user.Name = user.Name;
+            _user.Email = user.Email;
+            _context.Users.Update(_user);
+
+            int atualizou = await _context.SaveChangesAsync();
+
+            return atualizou > 0 ? true : false;
+
+        }
 
 
     }

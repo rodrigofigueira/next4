@@ -303,5 +303,34 @@ namespace next4_api_tests
 
         }
 
+        [TestMethod]
+        public async Task TestUpdate(){
+
+            User user = await userRepository.Post(new UserPost{
+                Name = "joão",
+                Email = "joão@email.com",
+                Password = "1"
+            });            
+
+            await userRepository.Update(new UserPut{
+                Email = "TestUpdate@email.com",
+                Id = user.Id,
+                Name = "TestUpdate"
+            });
+
+            UserGet retorno = await userRepository.GetById(user.Id);
+
+            bool atualizouNome = retorno.Name == "TestUpdate" ? true : false;
+            bool atualizouEmail = retorno.Email == "TestUpdate@email.com" ? true : false;
+
+            userRepository.Clear();
+
+            await userRepository.Delete(new User{ Id = retorno.Id});
+
+            Assert.IsTrue(atualizouEmail && atualizouNome);
+
+        }
+
+
     }
 }
