@@ -8,6 +8,7 @@ using next4_api.Models;
 using next4_api.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
+using next4_api.Interfaces;
 
 namespace next4_api_tests
 {
@@ -15,7 +16,7 @@ namespace next4_api_tests
     [TestClass]
     public class UserTest
     {
-        private UserRepository userRepository; 
+        private IUserRepository userRepository; 
 
         [TestInitialize]
         public void Setup(){

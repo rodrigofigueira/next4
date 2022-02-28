@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using next4_api.Data;
+using next4_api.Interfaces;
 using next4_api.Models;
 using BC = BCrypt.Net.BCrypt;
 
 namespace next4_api.Repository
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private DataContext _context;
 
