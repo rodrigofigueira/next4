@@ -15,7 +15,7 @@ namespace next4_api_tests
     [TestClass]
     public class UserTest
     {
-        UserRepository userRepository = null; 
+        private UserRepository userRepository; 
 
         [TestInitialize]
         public void Setup(){
@@ -28,16 +28,20 @@ namespace next4_api_tests
             this.userRepository = new UserRepository(dataContext);
         }
 
+        [TestCleanup]
+        public async Task TearDown(){
+            var allUsersFromBD = await userRepository.GetListByNameStartsWith("Test");            
+            await userRepository.DeleteRange(allUsersFromBD);
+        }
+
         [TestMethod]
         public async Task TestInsertNewUser(){
 
-            User user = await userRepository.Post(new UserPost{
-                Email = "rodrigo@gmail.com",
-                Name = "Rodrigo",
+            User user = await userRepository.Post(new User{
+                Email = "TestInsertNewUser@gmail.com",
+                Name = "TestInsertNewUser",
                 Password = "1"                
             });            
-
-            await userRepository.Delete(user);
 
             Assert.IsTrue(user.Id > 0 ? true : false);
 
@@ -48,15 +52,13 @@ namespace next4_api_tests
 
             string password = "1";
 
-            User user = await userRepository.Post(new UserPost{
+            User user = await userRepository.Post(new User{
                 Email = "TestLoginByEmailAndPassword@gmail.com",
                 Name = "TestLoginByEmailAndPassword",
                 Password = password            
             });                        
 
             var userLogin = await userRepository.GetByEmailAndPassword(user.Email, password);
-
-            await userRepository.Delete(user);
 
             Assert.IsNotNull(userLogin);
 
@@ -65,7 +67,7 @@ namespace next4_api_tests
         [TestMethod]
         public async Task TestDeletePassingUserObject(){            
 
-            var user = await userRepository.Post(new UserPost{
+            var user = await userRepository.Post(new User{
                 Email = "TestDeletePassingUserObject@gmail.com",
                 Name = "TestDeletePassingUserObject",
                 Password = "1"                
@@ -80,16 +82,14 @@ namespace next4_api_tests
         [TestMethod]
         public async Task TestGetById(){
 
-            var user = await userRepository.Post(new UserPost{
+            var user = await userRepository.Post(new User{
                 Email = "TestGetById@gmail.com",
                 Name = "TestGetById",
                 Password = "1"                
             });            
 
-            var userFromBD = await userRepository.GetById(user.Id);
+            User userFromBD = await userRepository.GetById(user.Id);
 
-            await userRepository.Delete(user);
-            
             Assert.IsNotNull(userFromBD);
 
         }
@@ -101,13 +101,13 @@ namespace next4_api_tests
 
             try{
 
-                user1 = await userRepository.Post(new UserPost{
+                user1 = await userRepository.Post(new User{
                                 Email = "TestNameIsUnique1@gmail.com",
                                 Name = "TestNameIsUnique",
                                 Password = "1"                
                             });            
 
-                var user2 = await userRepository.Post(new UserPost{
+                var user2 = await userRepository.Post(new User{
                                 Email = "TestNameIsUnique2@gmail.com",
                                 Name = "TestNameIsUnique",
                                 Password = "1"                
@@ -118,10 +118,6 @@ namespace next4_api_tests
                     Assert.IsTrue(ex.InnerException.Message.Contains("NameIsUnique"));
                 }
             }
-            finally{
-                await userRepository.Delete(user1);
-            }
-
 
         }
        
@@ -132,13 +128,13 @@ namespace next4_api_tests
 
             try{
 
-                user1 = await userRepository.Post(new UserPost{
+                user1 = await userRepository.Post(new User{
                                 Email = "TestEmailIsUnique@gmail.com",
                                 Name = "TestEmailIsUnique1",
                                 Password = "1"                
                             });            
 
-                var user2 = await userRepository.Post(new UserPost{
+                var user2 = await userRepository.Post(new User{
                                 Email = "TestEmailIsUnique@gmail.com",
                                 Name = "TestEmailIsUnique2",
                                 Password = "1"                
@@ -149,9 +145,6 @@ namespace next4_api_tests
                     Assert.IsTrue(ex.InnerException.Message.Contains("EmailIsUnique"));
                 }
             }
-            finally{
-                await userRepository.Delete(user1);
-            }
 
         }
 
@@ -159,47 +152,36 @@ namespace next4_api_tests
         public async Task TestGetListByNameStartsWith()
         {
 
-            List<UserPost> usersForPost = new List<UserPost>();
+            List<User> usersForPost = new List<User>();
                         
-            usersForPost.Add(new UserPost{
-                Email = "usersForPost1@gmail.com",
-                Name = "usersForPost1",
+            usersForPost.Add(new User{
+                Email = "TestGetListByNameStartsWith1@gmail.com",
+                Name = "TestGetListByNameStartsWith1",
                 Password = "1"
             });
 
-            usersForPost.Add(new UserPost{
-                Email = "usersForPost2@gmail.com",
-                Name = "usersForPost2",
+            usersForPost.Add(new User{
+                Email = "TestGetListByNameStartsWith2@gmail.com",
+                Name = "TestGetListByNameStartsWith2",
                 Password = "1"
             });
 
-            usersForPost.Add(new UserPost{
-                Email = "usersForPost3@gmail.com",
-                Name = "usersForPost3",
+            usersForPost.Add(new User{
+                Email = "TestGetListByNameStartsWith3@gmail.com",
+                Name = "TestGetListByNameStartsWith3",
                 Password = "1"
             });
             
-            foreach (UserPost userPost in usersForPost)
+            foreach (User userPost in usersForPost)
             {
                 await userRepository.Post(userPost);
             }
             
-            string name = "usersForPost";
+            string name = "TestGetListByNameStartsWith";
 
-            List<UserGet> users = await userRepository.GetListByNameStartsWith(name);
+            List<User> users = await userRepository.GetListByNameStartsWith(name);
 
             int total = users.Where(u => u.Name.StartsWith(name)).Count();
-
-            userRepository.Clear();
-
-            List<User> usersToRemove = new List<User>();
-            
-            foreach (UserGet userGet in users)
-            {
-                usersToRemove.Add(new User{Id = userGet.Id});
-            }            
-
-            await userRepository.DeleteRange(usersToRemove);
 
             Assert.IsTrue(total >= 3);
 
@@ -209,47 +191,36 @@ namespace next4_api_tests
         public async Task TestGetListByEmailStartsWith()
         {
 
-            List<UserPost> usersForPost = new List<UserPost>();
+            List<User> usersForPost = new List<User>();
                         
-            usersForPost.Add(new UserPost{
+            usersForPost.Add(new User{
                 Email = "TestGetListByEmailStartsWith1@gmail.com",
                 Name = "TestGetListByEmailStartsWith1",
                 Password = "1"
             });
 
-            usersForPost.Add(new UserPost{
+            usersForPost.Add(new User{
                 Email = "TestGetListByEmailStartsWith2@gmail.com",
                 Name = "TestGetListByEmailStartsWith2",
                 Password = "1"
             });
 
-            usersForPost.Add(new UserPost{
+            usersForPost.Add(new User{
                 Email = "TestGetListByEmailStartsWith3@gmail.com",
                 Name = "TestGetListByEmailStartsWith3",
                 Password = "1"
             });
             
-            foreach (UserPost userPost in usersForPost)
+            foreach (User userPost in usersForPost)
             {
                 await userRepository.Post(userPost);
             }
             
             string email = "TestGetListByEmailStartsWith";
 
-            List<UserGet> users = await userRepository.GetListByEmailStartsWith(email);
+            List<User> users = await userRepository.GetListByEmailStartsWith(email);
 
             int total = users.Where(u => u.Email.StartsWith(email)).Count();
-
-            userRepository.Clear();
-
-            List<User> usersToRemove = new List<User>();
-            
-            foreach (UserGet userGet in users)
-            {
-                usersToRemove.Add(new User{Id = userGet.Id});
-            }            
-
-            await userRepository.DeleteRange(usersToRemove);
 
             Assert.IsTrue(total >= 3);
 
@@ -260,7 +231,7 @@ namespace next4_api_tests
 
             string password = "1";
 
-            User user = await userRepository.Post(new UserPost{
+            User user = await userRepository.Post(new User{
                 Email = "TestLoginByUsernameAndPassword@gmail.com",
                 Name = "TestLoginByUsernameAndPassword",
                 Password = password            
@@ -268,10 +239,7 @@ namespace next4_api_tests
 
             var userLogin = await userRepository.GetByUsernameAndPassword(user.Name, password);
 
-            await userRepository.Delete(user);
-
             Assert.IsNotNull(userLogin);
-
 
         }
 
@@ -280,25 +248,19 @@ namespace next4_api_tests
 
             string name = "TestUpdatePassword";
 
-            User user = await userRepository.Post(new UserPost{
+            User user = await userRepository.Post(new User{
                 Name = name,
                 Email = "TestUpdatePassword@email.com",
                 Password = "1"
             });            
 
-            await userRepository.UpdatePassword(new UserPutPassword{
+            await userRepository.UpdatePassword(new User{
                 Id = user.Id,
-                NewPassword = "2"
+                Password = "2"
             });
 
-            UserToken userToken = await userRepository.GetByUsernameAndPassword(name, "2");
+            User userToken = await userRepository.GetByUsernameAndPassword(name, "2");
             
-            userRepository.Clear();
-
-            await userRepository.Delete(new User{
-                Id = user.Id
-            });
-
             Assert.IsNotNull(userToken);
 
         }
@@ -306,31 +268,26 @@ namespace next4_api_tests
         [TestMethod]
         public async Task TestUpdate(){
 
-            User user = await userRepository.Post(new UserPost{
+            User user = await userRepository.Post(new User{
                 Name = "joão",
                 Email = "joão@email.com",
                 Password = "1"
             });            
 
-            await userRepository.Update(new UserPut{
+            await userRepository.Update(new User{
                 Email = "TestUpdate@email.com",
                 Id = user.Id,
                 Name = "TestUpdate"
             });
 
-            UserGet retorno = await userRepository.GetById(user.Id);
+            User retorno = await userRepository.GetById(user.Id);
 
             bool atualizouNome = retorno.Name == "TestUpdate" ? true : false;
             bool atualizouEmail = retorno.Email == "TestUpdate@email.com" ? true : false;
 
-            userRepository.Clear();
-
-            await userRepository.Delete(new User{ Id = retorno.Id});
-
             Assert.IsTrue(atualizouEmail && atualizouNome);
 
         }
-
 
     }
 }

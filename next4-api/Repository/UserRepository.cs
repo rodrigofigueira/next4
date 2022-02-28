@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using next4_api.Data;
 using next4_api.Models;
-using next4_api.Models.DTO.User;
 using BC = BCrypt.Net.BCrypt;
-using next4_api.Services;
 
 namespace next4_api.Repository
 {
@@ -20,25 +18,18 @@ namespace next4_api.Repository
             _context = context;
         }
 
-        //ver como gravar passando uma lista
-        public async Task<User> Post(UserPost userPost){
+        public async Task<User> Post(User user){
 
             DateTime now = DateTime.Now;
 
-            User user = new User{
-                Name = userPost.Name,
-                Email = userPost.Email,
-                Password = BC.HashPassword(userPost.Password),
-                CreatedAt = now,
-                UpdatedAt = now
-            };            
-
+            user.Password = BC.HashPassword(user.Password);
+            user.CreatedAt = now;
+            user.UpdatedAt = now;
             _context.Users.Add(user);
             
             try{
                 await _context.SaveChangesAsync();
             }catch(Exception ex){
-                this.Clear();
                 throw ex;
             }
             
@@ -46,40 +37,27 @@ namespace next4_api.Repository
 
         }
 
-        public async Task<UserToken> GetByEmailAndPassword(string email, string password){
+        public async Task<User> GetByEmailAndPassword(string email, string password){
 
             var userFromBD = await _context.Users.Where(u => u.Email.Equals(email))
-                                                  .FirstOrDefaultAsync();
+                                                 .FirstOrDefaultAsync();
 
-            if(userFromBD == null 
-               || !BC.Verify(password, userFromBD.Password)
-            ) 
-            return null;
+            if(userFromBD == null || !BC.Verify(password, userFromBD.Password)) return null;
 
-            return new UserToken{
-                Name = userFromBD.Name,
-                Token = new TokenService().CreateToken(userFromBD.Name)
-            };
+            return userFromBD;
 
         }        
 
-        public async Task<UserToken> GetByUsernameAndPassword(string username, string password){
+        public async Task<User> GetByUsernameAndPassword(string username, string password){
 
             var userFromBD = await _context.Users.Where(u => u.Name.Equals(username))
                                                   .FirstOrDefaultAsync();
 
-            if(userFromBD == null 
-               || !BC.Verify(password, userFromBD.Password)
-            ) 
-            return null;
+            if(userFromBD == null || !BC.Verify(password, userFromBD.Password)) return null;
 
-            return new UserToken{
-                Name = userFromBD.Name,
-                Token = new TokenService().CreateToken(userFromBD.Name)
-            };
+            return userFromBD;
 
         }        
-
 
         public async Task<bool> Delete(User user){
 
@@ -99,70 +77,28 @@ namespace next4_api.Repository
             _context.Users.Local.Clear();
         }
 
-        public async Task<UserGet> GetById(int id){
+        public async Task<User> GetById(int id){
 
             var user = await _context.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
 
             if(user == null) return null;
 
-            return new UserGet{
-                Id = user.Id,
-                CreatedAt = user.CreatedAt,
-                Email = user.Email,
-                Name = user.Name,
-                UpdatedAt = user.UpdatedAt
-            };
+            return user;
 
         }        
 
-        public async Task<List<UserGet>> GetListByNameStartsWith(string name){
-            
-            var users = await _context.Users.Where(u => u.Name.StartsWith(name)).ToListAsync();
-
-            List<UserGet> userGets = new List<UserGet>();
-
-            foreach (User user in users)
-            {
-                userGets.Add(new UserGet{
-                    Id = user.Id,
-                    CreatedAt = user.CreatedAt,
-                    Email = user.Email,
-                    Name = user.Name,
-                    UpdatedAt = user.UpdatedAt
-                });
-            }
-
-            return userGets;
-
+        public async Task<List<User>> GetListByNameStartsWith(string name){            
+            return await _context.Users.Where(u => u.Name.StartsWith(name)).ToListAsync();
         }
 
-        public async Task<List<UserGet>> GetListByEmailStartsWith(string email){
-            
-            var users = await _context.Users.Where(u => u.Email.StartsWith(email)).ToListAsync();
-
-            List<UserGet> userGets = new List<UserGet>();
-
-            foreach (User user in users)
-            {
-                userGets.Add(new UserGet{
-                    Id = user.Id,
-                    CreatedAt = user.CreatedAt,
-                    Email = user.Email,
-                    Name = user.Name,
-                    UpdatedAt = user.UpdatedAt
-                });
-            }
-
-            return userGets;
-
+        public async Task<List<User>> GetListByEmailStartsWith(string email){
+            return await _context.Users.Where(u => u.Email.StartsWith(email)).ToListAsync();
         }
 
-        public async Task<bool> UpdatePassword(UserPutPassword user){
+        public async Task<bool> UpdatePassword(User user){
 
             User _user = await _context.Users.Where(u => u.Id == user.Id).FirstOrDefaultAsync();
-
-            _user.Password = BC.HashPassword(user.NewPassword);
-
+            _user.Password = BC.HashPassword(user.Password);
             _context.Users.Update(_user);
 
             int atualizou = await _context.SaveChangesAsync();
@@ -171,7 +107,7 @@ namespace next4_api.Repository
 
         }
 
-        public async Task<bool> Update(UserPut user){
+        public async Task<bool> Update(User user){
 
             User _user = await _context.Users.Where(u => u.Id == user.Id).FirstOrDefaultAsync();
             _user.UpdatedAt = DateTime.Now;
@@ -185,6 +121,9 @@ namespace next4_api.Repository
 
         }
 
+        public async Task<List<User>> GetAll(){
+            return await _context.Users.ToListAsync();
+        }
 
     }
 }
