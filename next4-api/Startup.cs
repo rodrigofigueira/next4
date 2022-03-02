@@ -14,6 +14,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using next4_api.Data;
+using next4_api.Interfaces;
+using next4_api.Repository;
 
 namespace next4_api
 {
@@ -80,6 +82,8 @@ namespace next4_api
                     ValidateAudience = false
                 };
             });
+        
+            services.AddTransient<IUserRepository, UserRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

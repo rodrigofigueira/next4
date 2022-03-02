@@ -7,11 +7,19 @@ using next4_api.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Web;
+using next4_api.Interfaces;
+using next4_api.Repository;
 
 namespace next4_api.Controllers
 {
     public class UsersController : BaseApiController
     {
+
+        private IUserRepository _userRepository;
+
+        public UsersController(IUserRepository userRepository){
+            _userRepository = userRepository;
+        }
 
         ///<summary>
         ///Cria novo usuário
@@ -19,43 +27,42 @@ namespace next4_api.Controllers
         /// <param name="user">objeto User com name, email e password</param>
         /// <returns>UserToken</returns>
         [HttpPost]
+        // [Authorize]
         public async Task<ActionResult<UserToken>> Post([FromBody] UserPost user){
 
-            // UserDAO userDAO = new UserDAO();
+            var _user = await _userRepository.Post(new User{
+                Email = user.Email,
+                Name = user.Name,
+                Password = user.Password
+            });
 
-            // if(await userDAO.NameExists(user.Name)) return BadRequest("Nome já existe");
-            // if(await userDAO.EmailExists(user.Email)) return BadRequest("Email já existe");
-
-            // var _user = await userDAO.Post(user);
-
-            // if(_user == null) return StatusCode(500, "Erro ao gravar!");
-
-            // return Ok(new UserToken{
-            //     Name = _user.Name,
-            //     Token = new TokenService().CreateToken(_user.Name)
-            // });
-            return Ok();
+            return Ok(new UserToken{
+                Id = _user.Id,
+                Name = _user.Name,
+                Token = new TokenService().CreateToken(_user.Name)
+            });
         }
 
-        // ///<summary>
-        // ///Realiza o login por name
-        // ///</summary>
-        // /// <param name="user">objeto User com username e password</param>
-        // /// <returns>UserToken</returns>
-        // [HttpPost]
-        // [Route("login/byusername")]
-        // public async Task<ActionResult<UserToken>> LoginByName([FromBody] UserLoginByName user){
+        ///<summary>
+        ///Realiza o login por name
+        ///</summary>
+        /// <param name="user">objeto User com username e password</param>
+        /// <returns>UserToken</returns>
+        [HttpPost]
+        [Route("login/byusername")]
+        public async Task<ActionResult<UserToken>> LoginByName([FromBody] UserLoginByName user){
 
-        //     UserGet _user = await new UserDAO().GetByUsernameAndPassword(user.Name, user.Password);
+            User _user = await _userRepository.GetByUsernameAndPassword(user.Name, user.Password);
 
-        //     if(_user == null) return BadRequest("Usuário não encontrado");
+            if(_user == null) return BadRequest("Usuário não encontrado");
 
-        //     return Ok(new UserToken{
-        //         Name = user.Name,
-        //         Token = new TokenService().CreateToken(user.Name)
-        //     });
+            return Ok(new UserToken{
+                Id = _user.Id,
+                Name = user.Name,
+                Token = new TokenService().CreateToken(user.Name)
+            });
 
-        // }
+        }
 
         // ///<summary>
         // ///Realiza o login por email
