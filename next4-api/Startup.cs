@@ -12,7 +12,6 @@ using System.Reflection;
 using System.IO;
 using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.SqlClient;
 using next4_api.Data;
 using next4_api.Interfaces;
 using next4_api.Repository;
