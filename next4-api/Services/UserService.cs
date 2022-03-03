@@ -22,6 +22,7 @@ namespace next4_api.Services
         public async Task<bool> Delete(int id)
         {
             User user = await _userRepository.GetById(id);
+            if (user == null) return false;
             bool deleted = await _userRepository.Delete(user);            
             return deleted;
         }
@@ -131,16 +132,41 @@ namespace next4_api.Services
 
         public async Task<bool> Update(UserPut user)
         {
-            return await _userRepository.Update(new User{
-                Id = user.Id,
-                Email = user.Email,
-                Name = user.Name
-            });
+            var _user = await _userRepository.GetById(user.Id);
+            if (_user == null) return false;
+
+            bool atualizou = true;
+
+            try
+            {
+                atualizou =  await _userRepository.Update(new User
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Name = user.Name
+                });
+
+            }
+            catch(Microsoft.EntityFrameworkCore.DbUpdateException dbException)
+            {
+                string innerMessage = dbException.InnerException.Message;
+
+                if (innerMessage.Contains("NameIsUnique")) throw new Exception("Nome já existe");
+                if (innerMessage.Contains("EmailIsUnique")) throw new Exception("Email já existe");
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return atualizou;
         }
 
         public async Task<bool> UpdatePassword(UserPutPassword user)
         {
             User userFromDB = await _userRepository.GetById(user.Id);
+
+            if (userFromDB == null) return false;
 
             string oldPasswordFromDB = userFromDB.Password;            
 

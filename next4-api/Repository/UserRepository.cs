@@ -28,11 +28,7 @@ namespace next4_api.Repository
             user.UpdatedAt = now;
             _context.Users.Add(user);
             
-            try{
-                await _context.SaveChangesAsync();
-            }catch(Exception ex){
-                throw ex;
-            }
+            await _context.SaveChangesAsync();
             
             return user;
 
@@ -79,13 +75,7 @@ namespace next4_api.Repository
         }
 
         public async Task<User> GetById(int id){
-
-            var user = await _context.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
-
-            if(user == null) return null;
-
-            return user;
-
+            return await _context.Users.Where(u => u.Id == id).FirstOrDefaultAsync();            
         }        
 
         public async Task<List<User>> GetListByNameStartsWith(string name){            
@@ -99,9 +89,6 @@ namespace next4_api.Repository
         public async Task<bool> UpdatePassword(User user){
 
             User _user = await _context.Users.Where(u => u.Id == user.Id).FirstOrDefaultAsync();
-
-            if (_user == null) return false;
-
             _user.Password = BC.HashPassword(user.Password);
             _context.Users.Update(_user);
 
