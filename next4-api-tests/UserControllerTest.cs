@@ -169,6 +169,133 @@ namespace next4_api_tests
         }
 
 
+        [Fact]
+        public async Task UserControllerTestGetByIdFound(){
+
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            
+            user = await userRepository.Post(user);
+
+            var okResult = await usersController.GetById(user.Id);
+            var item = okResult.Result as OkObjectResult;
+
+
+            Assert.IsType<OkObjectResult>(okResult.Result);                        
+            Assert.IsType<UserGet>(item.Value);
+
+            var userGet = item.Value as UserGet;
+            Assert.Equal(userGet.Id, user.Id);
+            Assert.Equal(userGet.Name, user.Name);
+            Assert.Equal(userGet.Email, user.Email);
+
+            usersToDelete.Add(new User{Id = user.Id});
+
+        }
+
+        [Fact]
+        public async Task UserControllerTestGetByIdNotFound(){
+
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            
+            user = await userRepository.Post(user);
+
+            var badRequest = await usersController.GetById(-1);
+            var item = badRequest.Result as BadRequestObjectResult;
+
+            var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);                        
+            Assert.Equal("Usuário não encontrado", result.Value);
+
+            usersToDelete.Add(new User{Id = user.Id});
+
+        }
+
+        [Fact]
+        public async Task UserControllerTestGetListByNameStartsWithFound(){
+
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            
+            user = await userRepository.Post(user);
+
+            var okResult = await usersController.GetListByNameStartsWith(user.Name);
+            var item = okResult.Result as OkObjectResult;
+
+            Assert.IsType<OkObjectResult>(okResult.Result);                        
+            Assert.IsType<List<UserGet>>(item.Value);
+
+            var users = item.Value as List<UserGet>;
+            Assert.Equal(users.Count, 1);
+
+            usersToDelete.Add(new User{Id = user.Id});
+
+        }
+
+        [Fact]
+        public async Task UserControllerTestGetListByNameStartsWithNotFound(){
+
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            
+            user = await userRepository.Post(user);
+
+            var badRequest = await usersController.GetListByNameStartsWith("9999");
+            var item = badRequest.Result as BadRequestObjectResult;
+
+            var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);                        
+            Assert.Equal("Nenhum usuário encontrado", result.Value);
+
+            usersToDelete.Add(new User{Id = user.Id});
+
+        }
+
+        [Fact]
+        public async Task UserControllerTestGetListByEmailStartsWithFound(){
+
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            
+            user = await userRepository.Post(user);
+
+            var okResult = await usersController.GetListByEmailStartsWith(user.Email);
+            var item = okResult.Result as OkObjectResult;
+
+            Assert.IsType<OkObjectResult>(okResult.Result);                        
+            Assert.IsType<List<UserGet>>(item.Value);
+
+            var users = item.Value as List<UserGet>;
+            Assert.Equal(users.Count, 1);
+
+            usersToDelete.Add(new User{Id = user.Id});
+
+        }
+
+        [Fact]
+        public async Task UserControllerTestGetListByEmailStartsWithNotFound(){
+
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            
+            user = await userRepository.Post(user);
+
+            var badRequest = await usersController.GetListByEmailStartsWith("9999");
+            var item = badRequest.Result as BadRequestObjectResult;
+
+            var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);                        
+            Assert.Equal("Nenhum usuário encontrado", result.Value);
+
+            usersToDelete.Add(new User{Id = user.Id});
+
+        }
+
+
 
 
 

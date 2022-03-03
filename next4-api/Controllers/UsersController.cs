@@ -85,48 +85,82 @@ namespace next4_api.Controllers
 
         }
 
-        // ///<summary>
-        // ///Pesquisa o usuário por id
-        // ///</summary>
-        // /// <param name="id">Id do usuário</param>
-        // /// <returns>User</returns>
-        // [Authorize]
-        // [HttpGet]
-        // [Route("{id}")]
-        // public async Task<ActionResult<UserGet>> GetById([FromRoute] int id){
-        //     UserDAO userDao = new UserDAO();
-        //     var user = await userDao.GetById(id);
-        //     if(user == null) return BadRequest("Usuário não encontrado");
-        //     return Ok(user);
-        // }
+        ///<summary>
+        ///Pesquisa o usuário por id
+        ///</summary>
+        /// <param name="id">Id do usuário</param>
+        /// <returns>User</returns>
+        [Authorize]
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<UserGet>> GetById([FromRoute] int id){
+            User user = await _userRepository.GetById(id);
+            if(user == null) return BadRequest("Usuário não encontrado");
+            return Ok(new UserGet{
+                Id = user.Id,
+                CreatedAt = user.CreatedAt,
+                Email = user.Email,
+                Name = user.Name,
+                UpdatedAt = user.UpdatedAt
+            });
+        }
 
-        // ///<summary>
-        // ///Pesquisa usuários por username
-        // ///</summary>
-        // /// <param name="name">Texto para realizar a pesquisa</param>
-        // /// <returns>Lista de User</returns>
-        // [Authorize]
-        // [HttpGet]
-        // [Route("getbyname/{name}")]
-        // public async Task<ActionResult<List<UserGet>>> GetByName([FromRoute] string name){
-        //     var users = await new UserDAO().GetListByNameStartsWith(name);
-        //     if(users == null || users.Count == 0) return BadRequest("Usuário não encontrado");
-        //     return Ok(users);
-        // }
+        ///<summary>
+        ///Pesquisa usuários por username
+        ///</summary>
+        /// <param name="name">Texto para realizar a pesquisa</param>
+        /// <returns>Lista de User</returns>
+        [Authorize]
+        [HttpGet]
+        [Route("getbyname/{name}")]
+        public async Task<ActionResult<List<UserGet>>> GetListByNameStartsWith([FromRoute] string name){
+            
+            var users = await _userRepository.GetListByNameStartsWith(name);
+            if(users == null || users.Count == 0) return BadRequest("Nenhum usuário encontrado");
 
-        // ///<summary>
-        // ///Pesquisa usuários por email
-        // ///</summary>
-        // /// <param name="email">Texto para realizar a pesquisa</param>
-        // /// <returns>Lista de User</returns>
-        // [Authorize]
-        // [HttpGet]
-        // [Route("getbyemail/{email}")]
-        // public async Task<ActionResult<List<UserGet>>> GetByEmail([FromRoute] string email){
-        //     var users = await new UserDAO().GetListByEmailStartsWith(email);
-        //     if(users == null || users.Count == 0) return BadRequest("Usuário não encontrado");
-        //     return Ok(users);
-        // }
+            var usersGet = new List<UserGet>();
+
+            foreach(var user in users){
+                usersGet.Add(new UserGet{
+                    CreatedAt = user.CreatedAt,
+                    Email = user.Email,
+                    Id = user.Id,
+                    Name = user.Name,
+                    UpdatedAt = user.UpdatedAt
+                });
+            }
+
+            return Ok(usersGet);
+        }
+
+        ///<summary>
+        ///Pesquisa usuários por email
+        ///</summary>
+        /// <param name="email">Texto para realizar a pesquisa</param>
+        /// <returns>Lista de User</returns>
+        [Authorize]
+        [HttpGet]
+        [Route("getbyemail/{email}")]
+        public async Task<ActionResult<List<UserGet>>> GetListByEmailStartsWith([FromRoute] string email){
+            
+            var users = await _userRepository.GetListByEmailStartsWith(email);
+            
+            if(users == null || users.Count == 0) return BadRequest("Nenhum usuário encontrado");
+
+            var usersGet = new List<UserGet>();
+
+            foreach(var user in users){
+                usersGet.Add(new UserGet{
+                    CreatedAt = user.CreatedAt,
+                    Email = user.Email,
+                    Id = user.Id,
+                    Name = user.Name,
+                    UpdatedAt = user.UpdatedAt
+                });
+            }
+
+            return Ok(usersGet);
+        }
 
         // ///<summary>
         // ///Atualiza a senha do usuário
