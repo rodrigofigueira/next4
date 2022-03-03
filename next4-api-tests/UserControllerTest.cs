@@ -89,5 +89,90 @@ namespace next4_api_tests
             usersToDelete.Add(new User{Id = user.Id});
         }
 
+        [Fact]
+        public async Task UserControllerTestLoginByNameAndPasswordNotFound(){
+
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            
+            string password = user.Password;
+            user = await userRepository.Post(user);
+
+            UserLoginByName userLoginByName = new UserLoginByName{
+                Name = user.Name,
+                Password = "password_wrong"
+            };
+
+            var badRequest = await usersController.LoginByName(userLoginByName);
+            var item = badRequest.Result as BadRequestObjectResult;
+
+            var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);                        
+            Assert.Equal("Usuário não encontrado", result.Value);
+
+            usersToDelete.Add(new User{Id = user.Id});
+
+        }
+
+
+        [Fact]        
+        public async Task UsersControllerTestLoginByEmailAndPassword(){
+
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            
+            string password = user.Password;
+            user = await userRepository.Post(user);
+
+            UserLoginByEmail userLoginByEmail = new UserLoginByEmail{
+                Email = user.Email,
+                Password = password
+            };
+
+            var okResult = await usersController.LoginByEmail(userLoginByEmail);
+            var item = okResult.Result as OkObjectResult;
+
+            Assert.IsType<OkObjectResult>(okResult.Result);                        
+            Assert.IsType<UserToken>(item.Value);
+
+            var userToken = item.Value as UserToken;
+            Assert.True(userToken.Id > 0);
+            Assert.False(String.IsNullOrEmpty(userToken.Token));
+
+            usersToDelete.Add(new User{Id = user.Id});
+        }
+
+        [Fact]
+        public async Task UserControllerTestLoginByEmailAndPasswordNotFound(){
+
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            
+            string password = user.Password;
+            user = await userRepository.Post(user);
+
+            UserLoginByEmail userLoginByEmail = new UserLoginByEmail{
+                Email = user.Email,
+                Password = "password_wrong"
+            };
+
+            var badRequest = await usersController.LoginByEmail(userLoginByEmail);
+            var item = badRequest.Result as BadRequestObjectResult;
+
+            var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);                        
+            Assert.Equal("Usuário não encontrado", result.Value);
+
+            usersToDelete.Add(new User{Id = user.Id});
+
+        }
+
+
+
+
+
+
+
     }
 }

@@ -64,25 +64,26 @@ namespace next4_api.Controllers
 
         }
 
-        // ///<summary>
-        // ///Realiza o login por email
-        // ///</summary>
-        // /// <param name="user">objeto User com login e password</param>
-        // /// <returns>UserToken</returns>
-        // [HttpPost]
-        // [Route("login/byemail")]
-        // public async Task<ActionResult<UserToken>> LoginByEmail([FromBody] UserLoginByEmail user){
+        ///<summary>
+        ///Realiza o login por email
+        ///</summary>
+        /// <param name="user">objeto User com login e password</param>
+        /// <returns>UserToken</returns>
+        [HttpPost]
+        [Route("login/byemail")]
+        public async Task<ActionResult<UserToken>> LoginByEmail([FromBody] UserLoginByEmail user){
 
-        //     UserGet _user = await new UserDAO().GetByEmailAndPassword(user.Email, user.Password);
+            User _user = await _userRepository.GetByEmailAndPassword(user.Email, user.Password);
 
-        //     if(_user == null) return BadRequest("Usuário não encontrado");
+            if(_user == null) return BadRequest("Usuário não encontrado");
 
-        //     return Ok(new UserToken{
-        //         Name = user.Email,
-        //         Token = new TokenService().CreateToken(user.Email)
-        //     });
+            return Ok(new UserToken{
+                Id = _user.Id,
+                Name = _user.Name,
+                Token = new TokenService().CreateToken(_user.Name)
+            });
 
-        // }
+        }
 
         // ///<summary>
         // ///Pesquisa o usuário por id
