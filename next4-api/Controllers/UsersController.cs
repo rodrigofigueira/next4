@@ -1,14 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using next4_api.Models.DTO.User;
-using next4_api.Models;
-using next4_api.Data;
-using next4_api.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Web;
 using next4_api.Interfaces;
-using next4_api.Repository;
 using System;
 
 namespace next4_api.Controllers
@@ -145,12 +140,6 @@ namespace next4_api.Controllers
         [HttpPut]
         public async Task<ActionResult<string>> Update([FromBody] UserPut user)
         {
-
-            //if (await userDAO.EmailExistsWithIdNotEqualsTo(user.Email, user.Id))
-            //    return BadRequest("Email já existe");
-
-            //if (await userDAO.NameExistsWithIdNotEqualsTo(user.Name, user.Id))
-            //    return BadRequest("Nome já existe");
 
             try
             {
