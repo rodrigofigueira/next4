@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using next4_api.Data;
 using next4_api.Models.DTO.User;
 using System.Linq;
@@ -9,17 +8,16 @@ using next4_api.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using next4_api.Interfaces;
+using Xunit;
 
 namespace next4_api_tests
 {
 
-    [TestClass]
-    public class UserTest
+    public class UserTest : IAsyncLifetime
     {
         private IUserRepository userRepository; 
 
-        [TestInitialize]
-        public void Setup(){
+        public UserTest(){
             DbContextOptions<DataContext> options = new DbContextOptionsBuilder<DataContext>()            
                            .UseSqlServer(connectionString:@"Persist Security Info=False;server=.\SQLEXPRESS2019;database=next4;uid=sa;pwd=sql339023")
                            .Options;
@@ -27,15 +25,19 @@ namespace next4_api_tests
             DataContext dataContext = new DataContext(options);
 
             this.userRepository = new UserRepository(dataContext);
-        }
+        }        
 
-        [TestCleanup]
-        public async Task TearDown(){
+        public async Task DisposeAsync()
+        {
             var allUsersFromBD = await userRepository.GetListByNameStartsWith("Test");            
             await userRepository.DeleteRange(allUsersFromBD);
+
         }
 
-        [TestMethod]
+        public async Task InitializeAsync()
+        {}
+
+        [Fact]
         public async Task TestInsertNewUser(){
 
             User user = await userRepository.Post(new User{
@@ -44,11 +46,11 @@ namespace next4_api_tests
                 Password = "1"                
             });            
 
-            Assert.IsTrue(user.Id > 0 ? true : false);
+            Assert.True(user.Id > 0 ? true : false);
 
         }        
 
-        [TestMethod]
+        [Fact]
         public async Task TestLoginByEmailAndPassword(){
 
             string password = "1";
@@ -61,11 +63,11 @@ namespace next4_api_tests
 
             var userLogin = await userRepository.GetByEmailAndPassword(user.Email, password);
 
-            Assert.IsNotNull(userLogin);
+            Assert.NotNull(userLogin);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestDeletePassingUserObject(){            
 
             var user = await userRepository.Post(new User{
@@ -76,11 +78,11 @@ namespace next4_api_tests
 
             bool deletou = await userRepository.Delete(user);
 
-            Assert.IsTrue(deletou);           
+            Assert.True(deletou);           
 
-        }        
+        }     
 
-        [TestMethod]
+        [Fact]
         public async Task TestGetById(){
 
             var user = await userRepository.Post(new User{
@@ -91,11 +93,11 @@ namespace next4_api_tests
 
             User userFromBD = await userRepository.GetById(user.Id);
 
-            Assert.IsNotNull(userFromBD);
+            Assert.NotNull(userFromBD);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestNameIsUnique(){
 
             User user1 = null;
@@ -116,13 +118,13 @@ namespace next4_api_tests
 
             }catch(Exception ex){
                 if(ex.InnerException != null){
-                    Assert.IsTrue(ex.InnerException.Message.Contains("NameIsUnique"));
+                    Assert.True(ex.InnerException.Message.Contains("NameIsUnique"));
                 }
             }
 
         }
        
-        [TestMethod]
+        [Fact]
         public async Task TestEmailIsUnique(){
 
             User user1 = null;
@@ -143,13 +145,13 @@ namespace next4_api_tests
 
             }catch(Exception ex){
                 if(ex.InnerException != null){
-                    Assert.IsTrue(ex.InnerException.Message.Contains("EmailIsUnique"));
+                    Assert.True(ex.InnerException.Message.Contains("EmailIsUnique"));
                 }
             }
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestGetListByNameStartsWith()
         {
 
@@ -184,11 +186,11 @@ namespace next4_api_tests
 
             int total = users.Where(u => u.Name.StartsWith(name)).Count();
 
-            Assert.IsTrue(total >= 3);
+            Assert.True(total >= 3);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestGetListByEmailStartsWith()
         {
 
@@ -223,11 +225,11 @@ namespace next4_api_tests
 
             int total = users.Where(u => u.Email.StartsWith(email)).Count();
 
-            Assert.IsTrue(total >= 3);
+            Assert.True(total >= 3);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestLoginByUsernameAndPassword(){
 
             string password = "1";
@@ -240,11 +242,11 @@ namespace next4_api_tests
 
             var userLogin = await userRepository.GetByUsernameAndPassword(user.Name, password);
 
-            Assert.IsNotNull(userLogin);
+            Assert.NotNull(userLogin);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUpdatePassword(){
 
             string name = "TestUpdatePassword";
@@ -262,11 +264,11 @@ namespace next4_api_tests
 
             User userToken = await userRepository.GetByUsernameAndPassword(name, "2");
             
-            Assert.IsNotNull(userToken);
+            Assert.NotNull(userToken);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUpdate(){
 
             User user = await userRepository.Post(new User{
@@ -286,9 +288,10 @@ namespace next4_api_tests
             bool atualizouNome = retorno.Name == "TestUpdate" ? true : false;
             bool atualizouEmail = retorno.Email == "TestUpdate@email.com" ? true : false;
 
-            Assert.IsTrue(atualizouEmail && atualizouNome);
+            Assert.True(atualizouEmail && atualizouNome);
 
         }
+ 
 
     }
 }
