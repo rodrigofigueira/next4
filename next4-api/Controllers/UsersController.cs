@@ -148,9 +148,6 @@ namespace next4_api.Controllers
             }
             catch (Exception ex)
             {
-
-
-
                 return BadRequest(ex.Message);
             }
 
