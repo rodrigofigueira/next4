@@ -2,23 +2,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using next4_api.Data;
 using next4_api.Interfaces;
 using next4_api.Services;
 using next4_api.Repository;
 using next4_api.Models.DTO.User;
+using Xunit;
 
 namespace next4_api_tests
 {
-    [TestClass]
-    public class TestUserService
+    public class TestUserService  : IAsyncLifetime
     {
 
         private IUserService _userService; 
 
-        [TestInitialize]
-        public void Setup(){
+        public TestUserService(){
 
             DbContextOptions<DataContext> options = new DbContextOptionsBuilder<DataContext>()            
                            .UseSqlServer(connectionString:@"Persist Security Info=False;server=.\SQLEXPRESS2019;database=next4;uid=sa;pwd=sql339023")
@@ -28,12 +26,14 @@ namespace next4_api_tests
 
         }
 
-        [TestCleanup]
-        public void TearDown(){
-            this._userService.DeleteAllThatNameStartsWith("TestUserService");
+        public async Task DisposeAsync()
+        {
+            await this._userService.DeleteAllThatNameStartsWith("TestUserService");
         }
-       
-        [TestMethod]
+
+        public async Task InitializeAsync(){}                
+
+        [Fact]       
         public async Task TestUserServicePostReturnIsNotNull(){
             
             UserPost userPost = new UserPost{
@@ -44,11 +44,11 @@ namespace next4_api_tests
             
             var returnFromDB = await _userService.Post(userPost);
 
-            Assert.IsNotNull(returnFromDB);
+            Assert.NotNull(returnFromDB);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUserServiceGetUserById(){
 
             UserPost userPost = new UserPost{
@@ -59,11 +59,11 @@ namespace next4_api_tests
 
             UserToken userToken = await _userService.Post(userPost);
             UserGet userGet = await _userService.GetById(userToken.Id);
-            Assert.IsNotNull(userGet);
+            Assert.NotNull(userGet);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUserServiceDeleteSingleUser(){
 
             UserPost userPost = new UserPost{
@@ -75,11 +75,11 @@ namespace next4_api_tests
             UserToken userToken = await _userService.Post(userPost);
             await _userService.Delete(userToken.Id);
             UserGet userGet = await _userService.GetById(userToken.Id);
-            Assert.IsNull(userGet);
+            Assert.Null(userGet);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUserServiceUpdate(){
 
             UserPost userPost = new UserPost{
@@ -101,12 +101,12 @@ namespace next4_api_tests
 
             UserGet userGet = await _userService.GetById(userToken.Id);
 
-            Assert.IsTrue(userGet.Name == newName && userGet.Email == newEmail);
+            Assert.True(userGet.Name == newName && userGet.Email == newEmail);
 
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUserServiceLoginByName(){
 
             string _password = "1";
@@ -125,12 +125,12 @@ namespace next4_api_tests
                 Password = _password
             });
 
-            Assert.IsNotNull(loggedUser);
+            Assert.NotNull(loggedUser);
 
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUserServiceLoginByEmail(){
 
             string _password = "1";
@@ -149,11 +149,11 @@ namespace next4_api_tests
                 Password = _password
             });
 
-            Assert.IsNotNull(loggedUser);
+            Assert.NotNull(loggedUser);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUserServiceGetListByUsername(){
 
             UserPost userPost1 = new UserPost{
@@ -182,11 +182,11 @@ namespace next4_api_tests
 
             List<UserGet> users = await _userService.GetByName("TestUserServiceGetListByUsername");
 
-            Assert.IsTrue(users.Count() >= 3);
+            Assert.True(users.Count() >= 3);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUserServiceGetListByEmail(){
 
             UserPost userPost1 = new UserPost{
@@ -215,11 +215,11 @@ namespace next4_api_tests
 
             List<UserGet> users = await _userService.GetByEmail("TestUserServiceGetListByEmail");
 
-            Assert.IsTrue(users.Count() >= 3);
+            Assert.True(users.Count() >= 3);
 
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestUserServiceUpdatePassword(){
 
             string password = "1";
@@ -246,7 +246,7 @@ namespace next4_api_tests
                 Password = newPassword
             });
 
-            Assert.IsNotNull(loggedUser);
+            Assert.NotNull(loggedUser);
 
         }
 
