@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using next4_api.Data;
 using next4_api.Interfaces;
 using next4_api.Repository;
+using next4_api.Services;
 
 namespace next4_api
 {
@@ -83,6 +84,7 @@ namespace next4_api
             });
         
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
