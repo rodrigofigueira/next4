@@ -99,6 +99,9 @@ namespace next4_api.Repository
         public async Task<bool> UpdatePassword(User user){
 
             User _user = await _context.Users.Where(u => u.Id == user.Id).FirstOrDefaultAsync();
+
+            if (_user == null) return false;
+
             _user.Password = BC.HashPassword(user.Password);
             _context.Users.Update(_user);
 

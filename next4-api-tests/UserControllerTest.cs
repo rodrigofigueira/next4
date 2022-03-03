@@ -295,8 +295,51 @@ namespace next4_api_tests
 
         }
 
+        [Fact]
+        public async Task UserControllerTestUpdatePasswordOk(){
 
+            var autoFaker = new AutoFaker<User>()
+                .RuleFor(o => o.Id, f => 0);
+            User user = autoFaker.Generate();
+            string oldPassword = user.Password;            
 
+            user = await userRepository.Post(user);
+
+            UserPutPassword userPutPassword = new UserPutPassword{
+                Id = user.Id,
+                NewPassword = "2",
+                OldPassword = oldPassword
+            };
+
+            var okResult = await usersController.UpdatePassword(userPutPassword);
+            var item = okResult.Result as OkObjectResult;
+
+            Assert.IsType<OkObjectResult>(okResult.Result);                        
+            Assert.IsType<string>(item.Value);
+
+            var result = item.Value as string;
+            Assert.Equal(result, "Senha atualizada com sucesso.");
+
+            usersToDelete.Add(new User{Id = user.Id});
+
+        }
+
+       [Fact]
+        public async Task UserControllerTestUpdatePasswordError(){
+
+            var autoFaker = new AutoFaker<UserPutPassword>();
+            UserPutPassword user = autoFaker.Generate();
+
+            var badRequestResult = await usersController.UpdatePassword(user);
+            var item = badRequestResult.Result as BadRequestObjectResult;
+
+            Assert.IsType<BadRequestObjectResult>(badRequestResult.Result);                        
+            Assert.IsType<string>(item.Value);
+
+            var result = item.Value as string;
+            Assert.Equal(result, "Não foi possível atualizar a senha.");
+
+        }
 
 
 

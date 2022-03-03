@@ -162,23 +162,28 @@ namespace next4_api.Controllers
             return Ok(usersGet);
         }
 
-        // ///<summary>
-        // ///Atualiza a senha do usuário
-        // ///</summary>
-        // /// <param name="user">objeto User com login e password</param>
-        // /// <returns>UserToken</returns>
-        // [Authorize]
-        // [HttpPut]
-        // [Route("password")]
-        // public async Task<ActionResult> UpdatePassword([FromBody] UserPutPassword user){
+        ///<summary>
+        ///Atualiza a senha do usuário
+        ///</summary>
+        /// <param name="user">objeto User com login e password</param>
+        /// <returns>UserToken</returns>
+        [Authorize]
+        [HttpPut]
+        [Route("password")]
+        public async Task<ActionResult<string>> UpdatePassword([FromBody] UserPutPassword user){
 
-        //     bool passwordUpdated = await new UserDAO().UpdatePassword(user);
+            User _user = new User{
+                Id = user.Id,
+                Password = user.NewPassword
+            };
 
-        //     if(passwordUpdated == true) return Ok("Senha atualizada com sucesso.");
+            bool passwordUpdated = await _userRepository.UpdatePassword(_user);
 
-        //     return BadRequest("Não foi possível realizar a atualização da senha.");
+            if(passwordUpdated == true) return Ok("Senha atualizada com sucesso.");
 
-        // }
+            return BadRequest("Não foi possível atualizar a senha.");
+
+        }
 
         // ///<summary>
         // ///Update Usuário
