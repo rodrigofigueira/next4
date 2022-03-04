@@ -13,7 +13,7 @@ using Api.Repository;
 using Api.Services;
 using Xunit;
 
-namespace next4_api_tests
+namespace Teste
 {
     public class UserControllerTest : IAsyncLifetime
     {
@@ -501,15 +501,21 @@ namespace next4_api_tests
                 Name = firstUserInserted.Name
             };
 
-            var badRequestResult = await usersController.Update(userToUpdate);
-            var item = badRequestResult.Result as BadRequestObjectResult;
+            ActionResult<string> badRequestResult = null;
+            BadRequestObjectResult item = null;
+            try
+            {
+                badRequestResult = await usersController.Update(userToUpdate);
+                item = badRequestResult.Result as BadRequestObjectResult;
+            }
+            catch
+            {
+                Assert.IsType<BadRequestObjectResult>(badRequestResult.Result);
+                Assert.IsType<string>(item.Value);
 
-            Assert.IsType<BadRequestObjectResult>(badRequestResult.Result);
-            Assert.IsType<string>(item.Value);
-
-            var result = item.Value as string;
-            Assert.Equal("Email já existe", result);
-
+                var result = item.Value as string;
+                Assert.Equal("Email já existe", result);
+            }
             usersToDelete.Add(new User { Id = firstUserInserted.Id });
             usersToDelete.Add(new User { Id = secondUserInserted.Id });
 

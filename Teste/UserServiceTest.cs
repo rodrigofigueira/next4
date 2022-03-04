@@ -10,7 +10,7 @@ using Api.Models.DTO.User;
 using Xunit;
 using AutoBogus;
 
-namespace next4_api_tests
+namespace Teste
 {
     public class UserServiceTest  : IAsyncLifetime
     {

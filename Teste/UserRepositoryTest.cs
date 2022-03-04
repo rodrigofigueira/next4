@@ -11,7 +11,7 @@ using Api.Interfaces;
 using Xunit;
 using AutoBogus;
 
-namespace next4_api_tests
+namespace Teste
 {
 
     public class UserRepositoryTest : IAsyncLifetime
@@ -34,7 +34,6 @@ namespace next4_api_tests
             userRepository.Clear();
             var allUsersFromBD = await userRepository.GetAll();
             await userRepository.DeleteRange(allUsersFromBD);
-
         }
 
         public async Task InitializeAsync()
@@ -151,30 +150,13 @@ namespace next4_api_tests
         public async Task TestGetListByNameStartsWith()
         {
 
-            List<User> usersForPost = new List<User>();
-
             var autoFaker = new AutoFaker<User>()
                      .RuleFor(o => o.Id, f => 0);
-
-            User user1 = autoFaker.Generate();
-            User user2 = autoFaker.Generate();
-            User user3 = autoFaker.Generate();
-
-            user1.Name = "teste1";
-            user2.Name = "teste2";
-            user3.Name = "teste3";
-
-            await userRepository.Post(user1);
-            await userRepository.Post(user2);
-            await userRepository.Post(user3);
-
-            string name = "teste";
-
-            List<User> users = await userRepository.GetListByNameStartsWith(name);
-
-            int total = users.Where(u => u.Name.StartsWith(name)).Count();
-
-            Assert.True(total >= 3);
+            User user = autoFaker.Generate();
+            await userRepository.Post(user);
+            List<User> users = await userRepository.GetListByNameStartsWith(user.Name);
+            int total = users.Where(u => u.Name.StartsWith(user.Name)).Count();
+            Assert.True(total >= 1);
 
         }
 
