@@ -27,6 +27,10 @@ namespace Api.Controllers
         [HttpPost]
         // [Authorize]
         public async Task<ActionResult<UserToken>> Post([FromBody] UserPost user){
+
+            bool nameExists = await _userService.NameExists(user.Name);
+            if(nameExists) return BadRequest("Nome já existe");
+
             return Ok(await _userService.Post(user));
         }
 
