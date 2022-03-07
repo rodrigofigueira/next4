@@ -151,8 +151,8 @@ namespace Api.Services
             {
                 string innerMessage = dbException.InnerException.Message;
 
-                if (innerMessage.Contains("NameIsUnique")) throw new Exception("Nome já existe");
-                if (innerMessage.Contains("EmailIsUnique")) throw new Exception("Email já existe");
+                if (innerMessage.Contains("NameIsUnique")) throw new Exception("Nome jï¿½ existe");
+                if (innerMessage.Contains("EmailIsUnique")) throw new Exception("Email jï¿½ existe");
             }
             catch(Exception ex)
             {
@@ -177,5 +177,10 @@ namespace Api.Services
             return await _userRepository.UpdatePassword(userFromDB);
 
         }
+ 
+        public async Task<bool> NameExists(string name){
+            return await _userRepository.NameExists(name);
+        }
+
     }
 }
