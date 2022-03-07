@@ -503,26 +503,20 @@ namespace Teste
 
             ActionResult<string> badRequestResult = null;
             BadRequestObjectResult item = null;
-            try
-            {
-                badRequestResult = await usersController.Update(userToUpdate);
-                item = badRequestResult.Result as BadRequestObjectResult;
-            }
-            catch
-            {
-                Assert.IsType<BadRequestObjectResult>(badRequestResult.Result);
-                Assert.IsType<string>(item.Value);
-
-                var result = item.Value as string;
-                Assert.Equal("Email já existe", result);
-            }
+            badRequestResult = await usersController.Update(userToUpdate);
+            item = badRequestResult.Result as BadRequestObjectResult;
+            Assert.IsType<BadRequestObjectResult>(badRequestResult.Result);
+            Assert.IsType<string>(item.Value);
+            var result = item.Value as string;
+            Assert.Equal("Email já existe", result);
             usersToDelete.Add(new User { Id = firstUserInserted.Id });
             usersToDelete.Add(new User { Id = secondUserInserted.Id });
 
         }
 
         [Fact]
-        public async Task PostFailBecauseNameExists(){
+        public async Task PostFailBecauseNameExists()
+        {
 
             var autoFaker = new AutoFaker<UserPost>()
                 .RuleFor(o => o.Email, f => f.Internet.Email());
@@ -546,7 +540,8 @@ namespace Teste
         }
 
         [Fact]
-        public async Task PostFailBecauseEmailExists(){
+        public async Task PostFailBecauseEmailExists()
+        {
 
             var autoFaker = new AutoFaker<UserPost>()
                 .RuleFor(o => o.Email, f => f.Internet.Email());

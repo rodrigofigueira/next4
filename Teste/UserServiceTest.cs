@@ -77,7 +77,7 @@ namespace Teste
             UserPost secondUser = autoFaker.Generate();
             UserToken secondUserToken = await _userService.Post(secondUser);
 
-            Assert.True(await _userService.EmailExistsUpdate(firstUser.Name, secondUserToken.Id));
+            Assert.True(await _userService.EmailExistsUpdate(firstUser.Email, secondUserToken.Id));
 
         }
 

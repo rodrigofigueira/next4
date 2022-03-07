@@ -153,6 +153,9 @@ namespace Api.Controllers
 
                 bool nameExists = await _userService.NameExistsUpdate(user.Name, user.Id);
                 if (nameExists) return BadRequest("Nome já existe");
+                
+                bool emailExists = await _userService.EmailExistsUpdate(user.Email, user.Id);
+                if (emailExists) return BadRequest("Email já existe");
 
                 bool userUpdated = await _userService.Update(user);
                 if (userUpdated == false) return BadRequest("Não foi possível realizar a atualização");
