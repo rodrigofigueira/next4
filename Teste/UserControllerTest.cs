@@ -545,6 +545,30 @@ namespace Teste
 
         }
 
+        [Fact]
+        public async Task PostFailBecauseEmailExists(){
+
+            var autoFaker = new AutoFaker<UserPost>()
+                .RuleFor(o => o.Email, f => f.Internet.Email());
+
+            UserPost firstUserToInsert = autoFaker.Generate();
+            UserPost secondUserToInsert = autoFaker.Generate();
+
+            var firstUserInserted = await userService.Post(firstUserToInsert);
+            secondUserToInsert.Email = firstUserToInsert.Email;
+
+            var badRequestResult = await usersController.Post(secondUserToInsert);
+            var item = badRequestResult.Result as BadRequestObjectResult;
+
+            Assert.IsType<BadRequestObjectResult>(badRequestResult.Result);
+            Assert.IsType<string>(item.Value);
+
+            var result = item.Value as string;
+            Assert.Equal("Email já existe", result);
+
+
+        }
+
 
     }
 }

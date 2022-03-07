@@ -31,6 +31,9 @@ namespace Api.Controllers
             bool nameExists = await _userService.NameExists(user.Name);
             if(nameExists) return BadRequest("Nome já existe");
 
+            bool emailExists = await _userService.EmailExists(user.Email);
+            if(emailExists) return BadRequest("Email já existe");
+
             return Ok(await _userService.Post(user));
         }
 
