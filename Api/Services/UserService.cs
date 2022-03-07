@@ -181,6 +181,10 @@ namespace Api.Services
         public async Task<bool> NameExists(string name){
             return await _userRepository.NameExists(name);
         }
+ 
+        public async Task<bool> EmailExists(string email){
+            return await _userRepository.EmailExists(email);
+        }
 
     }
 }

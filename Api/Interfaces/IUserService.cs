@@ -27,6 +27,8 @@ namespace Api.Interfaces
         public Task<bool> DeleteAllThatNameStartsWith(string name);
 
         public Task<bool> NameExists(string name);       
+ 
+        public Task<bool> EmailExists(string email);       
 
     }
 }
