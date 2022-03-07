@@ -31,6 +31,8 @@ namespace Api.Interfaces
         public Task<bool> EmailExists(string email);       
 
         public Task<bool> NameExistsUpdate(string name, int id);       
+ 
+        public Task<bool> EmailExistsUpdate(string name, int id);       
 
     }
 }

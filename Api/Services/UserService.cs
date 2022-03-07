@@ -190,5 +190,9 @@ namespace Api.Services
             return await _userRepository.NameExistsToDifferentId(name, id);
         }
 
+        public async Task<bool> EmailExistsUpdate(string name, int id){
+            return await _userRepository.EmailExistsToDifferentId(name, id);
+        }
+
     }
 }
