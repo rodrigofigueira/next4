@@ -279,5 +279,20 @@ namespace Teste
 
         }
 
+        [Fact]
+        public async Task TestPostEmailExists(){
+
+            var autoFaker = new AutoFaker<User>()
+                            .RuleFor(o => o.Id, f => 0);
+
+            User firstUser = autoFaker.Generate();
+            firstUser = await userRepository.Post(firstUser);
+            
+            bool emailExists = await userRepository.EmailExists(firstUser.Email);
+
+            Assert.True(emailExists);
+
+        }
+
     }
 }

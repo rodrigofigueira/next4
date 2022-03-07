@@ -30,6 +30,8 @@ namespace Api.Interfaces
         public Task<List<User>> GetAll();
 
         public Task<bool> NameExists(string name);       
+ 
+        public Task<bool> EmailExists(string name);       
 
     }
 }

@@ -121,6 +121,12 @@ namespace Api.Repository
 
             return total > 0 ? true : false;
         }
+ 
+        public async Task<bool> EmailExists(string email){
+            int total = await _context.Users.Where(u => u.Email.Equals(email)).CountAsync();
+
+            return total > 0 ? true : false;
+        }
 
     }
 }
