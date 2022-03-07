@@ -34,6 +34,8 @@ namespace Api.Interfaces
         public Task<bool> EmailExists(string name);       
 
         public Task<bool> NameExistsToDifferentId(string name, int id);       
+        
+        public Task<bool> EmailExistsToDifferentId(string name, int id);       
 
     }
 }

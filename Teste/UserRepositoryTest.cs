@@ -330,6 +330,42 @@ namespace Teste
 
         }
 
+        [Fact]
+        public async Task TestEmailExistsInUpdate(){
+
+            var autoFaker = new AutoFaker<User>()
+                            .RuleFor(o => o.Id, f => 0);
+
+            User firstUser = autoFaker.Generate();
+            firstUser = await userRepository.Post(firstUser);
+
+            User secondUser = autoFaker.Generate();
+            secondUser = await userRepository.Post(secondUser);
+            
+            bool emailExists = await userRepository.EmailExistsToDifferentId(secondUser.Email, firstUser.Id);
+
+            Assert.True(emailExists);
+
+        }
+
+        [Fact]
+        public async Task TestEmailNotExistsInUpdate(){
+
+            var autoFaker = new AutoFaker<User>()
+                            .RuleFor(o => o.Id, f => 0);
+
+            User firstUser = autoFaker.Generate();
+            firstUser = await userRepository.Post(firstUser);
+
+            User secondUser = autoFaker.Generate();
+            secondUser = await userRepository.Post(secondUser);
+            
+            bool emailExists = await userRepository.EmailExistsToDifferentId(secondUser.Email, secondUser.Id);
+
+            Assert.False(emailExists);
+
+        }
+
 
     }
 }

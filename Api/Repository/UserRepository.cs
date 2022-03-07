@@ -136,5 +136,13 @@ namespace Api.Repository
             return total > 0 ? true : false;
         }
 
+        public async Task<bool> EmailExistsToDifferentId(string email, int id){
+            int total = await _context.Users.Where(u => u.Email.Equals(email)
+                                                   && !u.Id.Equals(id)
+                                            ).CountAsync();
+
+            return total > 0 ? true : false;
+        }
+
     }
 }
