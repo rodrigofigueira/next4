@@ -55,6 +55,21 @@ namespace Teste
         }
 
         [Fact]
+        public async Task TestPostNameExistsUpdate(){
+            var autoFaker = new AutoFaker<UserPost>();
+            UserPost firstUser = autoFaker.Generate();
+            UserToken firstUserToken = await _userService.Post(firstUser);
+
+            UserPost secondUser = autoFaker.Generate();
+            UserToken secondUserToken = await _userService.Post(secondUser);
+
+            Assert.True(await _userService.NameExistsUpdate(firstUser.Name, secondUserToken.Id));
+
+        }
+
+
+
+        [Fact]
         public async Task TestPostEmailExists(){
             var autoFaker = new AutoFaker<UserPost>();
             UserPost userPost = autoFaker.Generate();
