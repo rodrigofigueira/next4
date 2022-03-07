@@ -263,5 +263,21 @@ namespace Teste
 
         }
 
+        [Fact]
+        public async Task TestPostNameExists(){
+
+            var autoFaker = new AutoFaker<User>()
+                            .RuleFor(o => o.Id, f => 0);
+
+            User firstUser = autoFaker.Generate();
+            firstUser = await userRepository.Post(firstUser);
+            
+            bool nameExists = await userRepository.NameExists(firstUser.Name);
+
+            Assert.True(nameExists);
+
+
+        }
+
     }
 }

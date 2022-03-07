@@ -28,7 +28,8 @@ namespace Api.Interfaces
         public Task<bool> Update(User user);
 
         public Task<List<User>> GetAll();
-        
+
+        public Task<bool> NameExists(string name);       
 
     }
 }

@@ -116,5 +116,11 @@ namespace Api.Repository
             return await _context.Users.ToListAsync();
         }
 
+        public async Task<bool> NameExists(string name){
+            int total = await _context.Users.Where(u => u.Name.Equals(name)).CountAsync();
+
+            return total > 0 ? true : false;
+        }
+
     }
 }
