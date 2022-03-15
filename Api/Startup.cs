@@ -83,6 +83,8 @@ namespace next4_api
         
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ILeadFormRepository, LeadFormRepository>();
+            services.AddTransient<ILeadFormService, LeadFormService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
