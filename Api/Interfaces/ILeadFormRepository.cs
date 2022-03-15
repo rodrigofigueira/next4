@@ -5,7 +5,6 @@ namespace Api.Interfaces
 {
     public interface ILeadFormRepository
     {
-
         public Task<LeadForm> Post(LeadForm leadForm);
 
         public Task<bool> Update(LeadForm leadForm);

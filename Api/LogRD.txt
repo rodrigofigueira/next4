@@ -1,0 +1,6 @@
+GetRD feito em 15/03/2022 
+ Teste Get
+
+PostRD feito em 15/03/2022 
+ Teste Post
+
