@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220315160817_Initial")]
-    partial class Initial
+    [Migration("20220316201302_Inicial")]
+    partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -64,19 +64,19 @@ namespace Api.Migrations
                     b.Property<string>("DescricaoProjeto")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DtCriacaoOpp")
+                    b.Property<DateTime?>("DtCriacaoOpp")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DtEstimativaFechamento")
+                    b.Property<DateTime?>("DtEstimativaFechamento")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DtFechamentoNegocio")
+                    b.Property<DateTime?>("DtFechamentoNegocio")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DtPerdaNegocio")
+                    b.Property<DateTime?>("DtPerdaNegocio")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DtRecLeadGc")
+                    b.Property<DateTime?>("DtRecLeadGc")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EmpresaCRM")
@@ -120,7 +120,7 @@ namespace Api.Migrations
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)");
 
-                    b.Property<int?>("LeadFormId")
+                    b.Property<int>("LeadFormId")
                         .HasColumnType("int");
 
                     b.Property<int>("ListaTucunare")
@@ -269,7 +269,7 @@ namespace Api.Migrations
                         .HasMaxLength(45)
                         .HasColumnType("nvarchar(45)");
 
-                    b.Property<int?>("LeadFormId")
+                    b.Property<int>("LeadFormId")
                         .HasColumnType("int");
 
                     b.Property<string>("TrafficCampaign")
@@ -304,31 +304,26 @@ namespace Api.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("dt_created");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("email");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasColumnName("name_view");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("password");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("dt_update")
                         .HasDefaultValueSql("GETDATE()");
 
                     b.HasKey("Id");
@@ -348,7 +343,9 @@ namespace Api.Migrations
                 {
                     b.HasOne("Api.Models.LeadForm", "LeadForm")
                         .WithMany("LeadCRMs")
-                        .HasForeignKey("LeadFormId");
+                        .HasForeignKey("LeadFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("LeadForm");
                 });
@@ -357,7 +354,9 @@ namespace Api.Migrations
                 {
                     b.HasOne("Api.Models.LeadForm", "LeadForm")
                         .WithMany("LeadRDs")
-                        .HasForeignKey("LeadFormId");
+                        .HasForeignKey("LeadFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("LeadForm");
                 });

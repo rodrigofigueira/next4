@@ -33,7 +33,6 @@ namespace Api.Data
                                        .HasDatabaseName("NameIsUnique");
 
             modelBuilder.Entity<User>().Property<string>(u => u.Name)
-                                       .HasColumnName("name_view")
                                        .HasMaxLength(100)
                                        .IsRequired();
 
@@ -42,20 +41,16 @@ namespace Api.Data
                                        .HasDatabaseName("EmailIsUnique");
 
             modelBuilder.Entity<User>().Property<string>(u => u.Email)
-                                       .HasColumnName("email")
                                        .HasMaxLength(100)
                                        .IsRequired();
 
             modelBuilder.Entity<User>().Property<string>(u => u.Password)
-                                       .HasColumnName("password")
                                        .HasMaxLength(200)
                                        .IsRequired();
 
-            modelBuilder.Entity<User>().Property<DateTime>(u => u.CreatedAt)
-                                       .HasColumnName("dt_created");
+            modelBuilder.Entity<User>().Property<DateTime>(u => u.CreatedAt);
 
             modelBuilder.Entity<User>().Property<DateTime>(u => u.UpdatedAt)
-                                       .HasColumnName("dt_update")
                                        .HasDefaultValueSql("GETDATE()");
 
 
@@ -75,12 +70,7 @@ namespace Api.Data
 
             #region LeadRD
             modelBuilder.Entity<LeadRD>().HasKey(u => u.Id);
-
-            //modelBuilder.Entity<LeadRD>()
-            //            .HasOne<LeadForm>(l => l.LeadForm)
-            //            .WithMany()
-            //            .HasForeignKey(x => x.LeadFormId);
-
+            
             modelBuilder.Entity<LeadRD>().Property<DateTime>(u => u.DataEntrada)
                                        .IsRequired();
 
@@ -113,7 +103,6 @@ namespace Api.Data
 
             modelBuilder.Entity<LeadForm>().HasKey(u => u.Id);
 
-            //definir o relacionamento
 
             modelBuilder.Entity<LeadForm>().Property<string>(u => u.Nome)
                                        .HasMaxLength(70);
@@ -146,13 +135,7 @@ namespace Api.Data
 
             #region LeadCRM
 
-            modelBuilder.Entity<LeadCRM>().HasKey(u => u.Id);
-
-            //modelBuilder.Entity<LeadCRM>()
-            //            .HasOne<LeadForm>(l => l.LeadForm)
-            //            .WithMany()
-            //            .HasForeignKey(x => x.LeadFormId);
-
+            modelBuilder.Entity<LeadCRM>().HasKey(u => u.Id);          
 
             modelBuilder.Entity<LeadCRM>().Property<string>(u => u.AccountIdCrm)
                                        .HasMaxLength(200);
@@ -178,6 +161,9 @@ namespace Api.Data
             modelBuilder.Entity<LeadCRM>().Property<string>(u => u.Vertical)
                                        .HasMaxLength(70);
 
+            modelBuilder.Entity<LeadCRM>().Property<DateTime?>(u => u.DtRecLeadGc)
+                                       .IsRequired(false);
+
             modelBuilder.Entity<LeadCRM>().Property<string>(u => u.FeedbackAtend);
 
             modelBuilder.Entity<LeadCRM>().Property<int>(u => u.Funcionarios);
@@ -199,7 +185,8 @@ namespace Api.Data
             modelBuilder.Entity<LeadCRM>().Property<string>(u => u.ProbabilidadeFechamento)
                                         .HasMaxLength(20);
 
-            modelBuilder.Entity<LeadCRM>().Property<DateTime>(u => u.DtEstimativaFechamento);
+            modelBuilder.Entity<LeadCRM>().Property<DateTime?>(u => u.DtEstimativaFechamento)
+                                          .IsRequired(false); ;
 
             modelBuilder.Entity<LeadCRM>().Property<string>(u => u.ReceitaMensalEstimada)
                                         .HasMaxLength(40);
@@ -219,11 +206,14 @@ namespace Api.Data
 
             modelBuilder.Entity<LeadCRM>().Property<int>(u => u.ListaTucunare);
 
-            modelBuilder.Entity<LeadCRM>().Property<DateTime>(u => u.DtFechamentoNegocio);
+            modelBuilder.Entity<LeadCRM>().Property<DateTime?>(u => u.DtFechamentoNegocio)
+                                          .IsRequired(false);
 
-            modelBuilder.Entity<LeadCRM>().Property<DateTime>(u => u.DtPerdaNegocio);
+            modelBuilder.Entity<LeadCRM>().Property<DateTime?>(u => u.DtPerdaNegocio)
+                                          .IsRequired(false);
 
-            modelBuilder.Entity<LeadCRM>().Property<DateTime>(u => u.DtCriacaoOpp);
+            modelBuilder.Entity<LeadCRM>().Property<DateTime?>(u => u.DtCriacaoOpp)
+                                          .IsRequired(false);
 
             modelBuilder.Entity<LeadCRM>().Property<string>(u => u.EstagioProcesso)
                                         .HasMaxLength(40);

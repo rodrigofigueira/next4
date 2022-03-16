@@ -18,7 +18,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<LeadRD>> Post([FromRoute] LeadRD leadRD)
+        public async Task<ActionResult<LeadRD>> Post([FromBody] LeadRD leadRD)
         {
             return Ok(await _leadRDService.Post(leadRD));
         }

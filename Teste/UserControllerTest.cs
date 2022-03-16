@@ -15,10 +15,9 @@ using Xunit;
 
 namespace Teste
 {
-    public class UserControllerTest : IAsyncLifetime
+    public class UserControllerTest
     {
 
-        List<User> usersToDelete;
         IUserRepository userRepository;
         UsersController usersController;
         IUserService userService;
@@ -27,29 +26,17 @@ namespace Teste
         {
 
             DbContextOptions<DataContext> options = new DbContextOptionsBuilder<DataContext>()
-                           .UseSqlServer(connectionString: @"Persist Security Info=False;server=.\SQLEXPRESS2019;database=next4;uid=sa;pwd=sql339023")
+                           .UseInMemoryDatabase("next4_user_controller")
                            .Options;
 
             DataContext dataContext = new DataContext(options);
 
             this.userRepository = new UserRepository(dataContext);
-            this.usersToDelete = new List<User>();
             this.userService = new UserService(userRepository);
             this.usersController = new UsersController(userRepository, userService);
 
         }
-
-        public async Task DisposeAsync()
-        {
-            if (usersToDelete.Count > 0)
-            {
-                userRepository.Clear();
-                await userRepository.DeleteRange(usersToDelete);
-            }
-        }
-
-        public async Task InitializeAsync() { }
-
+        
         [Fact]
         public async Task UsersControllerTestPostReturnok()
         {
@@ -67,7 +54,6 @@ namespace Teste
             Assert.True(user.Id > 0);
             Assert.False(String.IsNullOrEmpty(user.Token));
 
-            usersToDelete.Add(new User { Id = user.Id });
         }
 
         [Fact]
@@ -96,7 +82,6 @@ namespace Teste
             Assert.True(userToken.Id > 0);
             Assert.False(String.IsNullOrEmpty(userToken.Token));
 
-            usersToDelete.Add(new User { Id = userToken.Id });
         }
 
         [Fact]
@@ -120,7 +105,6 @@ namespace Teste
             var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);
             Assert.Equal("Usuário não encontrado", result.Value);
 
-            usersToDelete.Add(new User { Id = userToken.Id });
 
         }
 
@@ -151,7 +135,6 @@ namespace Teste
             Assert.True(userTokenFromController.Id > 0);
             Assert.False(String.IsNullOrEmpty(userTokenFromController.Token));
 
-            usersToDelete.Add(new User { Id = userTokenFromController.Id });
         }
 
         [Fact]
@@ -176,7 +159,6 @@ namespace Teste
             var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);
             Assert.Equal("Usuário não encontrado", result.Value);
 
-            usersToDelete.Add(new User { Id = userToken.Id });
 
         }
 
@@ -200,7 +182,6 @@ namespace Teste
             Assert.Equal(userGet.Name, userPost.Name);
             Assert.Equal(userGet.Email, userPost.Email);
 
-            usersToDelete.Add(new User { Id = userToken.Id });
 
         }
 
@@ -219,7 +200,6 @@ namespace Teste
             var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);
             Assert.Equal("Usuário não encontrado", result.Value);
 
-            usersToDelete.Add(new User { Id = userToken.Id });
 
         }
 
@@ -241,7 +221,6 @@ namespace Teste
             var users = item.Value as List<UserGet>;
             Assert.Single<UserGet>(users);
 
-            usersToDelete.Add(new User { Id = userToken.Id });
 
         }
 
@@ -260,7 +239,6 @@ namespace Teste
             var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);
             Assert.Equal("Nenhum usuário encontrado", result.Value);
 
-            usersToDelete.Add(new User { Id = userToken.Id });
 
         }
 
@@ -282,7 +260,6 @@ namespace Teste
             var users = item.Value as List<UserGet>;
             Assert.Single<UserGet>(users);
 
-            usersToDelete.Add(new User { Id = userToken.Id });
 
         }
 
@@ -301,7 +278,6 @@ namespace Teste
             var result = Assert.IsType<BadRequestObjectResult>(badRequest.Result);
             Assert.Equal("Nenhum usuário encontrado", result.Value);
 
-            usersToDelete.Add(new User { Id = userToken.Id });
 
         }
 
@@ -330,8 +306,6 @@ namespace Teste
 
             var result = item.Value as string;
             Assert.Equal("Senha atualizada com sucesso.", result);
-
-            usersToDelete.Add(new User { Id = userToken.Id });
 
         }
 
@@ -422,7 +396,6 @@ namespace Teste
             var result = item.Value as string;
             Assert.Equal("Usuário atualizado com sucesso.", result);
 
-            usersToDelete.Add(new User { Id = userInserted.Id });
 
         }
 
@@ -440,10 +413,6 @@ namespace Teste
             var item = badRequestResult.Result as BadRequestObjectResult;
 
             Assert.IsType<BadRequestObjectResult>(badRequestResult.Result);
-            Assert.IsType<string>(item.Value);
-
-            var result = item.Value as string;
-            Assert.Equal("Não foi possível realizar a atualização", result);
 
         }
 
@@ -476,8 +445,6 @@ namespace Teste
             var result = item.Value as string;
             Assert.Equal("Nome já existe", result);
 
-            usersToDelete.Add(new User { Id = firstUserInserted.Id });
-            usersToDelete.Add(new User { Id = secondUserInserted.Id });
 
         }
 
@@ -509,8 +476,6 @@ namespace Teste
             Assert.IsType<string>(item.Value);
             var result = item.Value as string;
             Assert.Equal("Email já existe", result);
-            usersToDelete.Add(new User { Id = firstUserInserted.Id });
-            usersToDelete.Add(new User { Id = secondUserInserted.Id });
 
         }
 

@@ -14,30 +14,20 @@ using AutoBogus;
 namespace Teste
 {
 
-    public class UserRepositoryTest : IAsyncLifetime
+    public class UserRepositoryTest
     {
         private IUserRepository userRepository;
-
+        
         public UserRepositoryTest()
         {
             DbContextOptions<DataContext> options = new DbContextOptionsBuilder<DataContext>()
-                           .UseSqlServer(connectionString: @"Persist Security Info=False;server=.\SQLEXPRESS2019;database=next4;uid=sa;pwd=sql339023")
+                           .UseInMemoryDatabase("next4_user_repository")
                            .Options;
 
             DataContext dataContext = new DataContext(options);
 
             this.userRepository = new UserRepository(dataContext);
         }
-
-        public async Task DisposeAsync()
-        {
-            userRepository.Clear();
-            var allUsersFromBD = await userRepository.GetAll();
-            await userRepository.DeleteRange(allUsersFromBD);
-        }
-
-        public async Task InitializeAsync()
-        { }
 
         [Fact]
         public async Task TestInsertNewUser()
@@ -112,7 +102,8 @@ namespace Teste
             {
                 if (ex.InnerException != null)
                 {
-                    Assert.True(ex.InnerException.Message.Contains("NameIsUnique"));
+                    bool message = ex.InnerException.Message.Contains("NameIsUnique");
+                    Assert.True(message);
                 }
             }
 
@@ -140,7 +131,8 @@ namespace Teste
             {
                 if (ex.InnerException != null)
                 {
-                    Assert.True(ex.InnerException.Message.Contains("EmailIsUnique"));
+                    bool message = ex.InnerException.Message.Contains("EmailIsUnique");
+                    Assert.True(message);
                 }
             }
 

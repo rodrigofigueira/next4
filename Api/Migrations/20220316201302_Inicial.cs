@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Api.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Inicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -50,11 +50,11 @@ namespace Api.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    name_view = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    password = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    dt_created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    dt_update = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -67,7 +67,6 @@ namespace Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LeadFormId = table.Column<int>(type: "int", nullable: true),
                     AccountIdCrm = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     StatusLead = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
                     EncLead = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
@@ -76,7 +75,7 @@ namespace Api.Migrations
                     EmpresaCRM = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
                     ChaveCRM = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Vertical = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
-                    DtRecLeadGc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DtRecLeadGc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     FeedbackAtend = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Funcionarios = table.Column<int>(type: "int", nullable: false),
                     Filiais = table.Column<int>(type: "int", nullable: false),
@@ -85,7 +84,7 @@ namespace Api.Migrations
                     RazaoStatus = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
                     ModalidadeTucunare = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
                     ProbabilidadeFechamento = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    DtEstimativaFechamento = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DtEstimativaFechamento = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ReceitaMensalEstimada = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
                     ReceitaTucunare = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
                     PrazoContratoEstimado = table.Column<int>(type: "int", nullable: false),
@@ -94,16 +93,17 @@ namespace Api.Migrations
                     NumeroProjetoTucunare = table.Column<int>(type: "int", nullable: false),
                     NumeroPropostaTucunare = table.Column<int>(type: "int", nullable: false),
                     ListaTucunare = table.Column<int>(type: "int", nullable: false),
-                    DtFechamentoNegocio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DtPerdaNegocio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DtCriacaoOpp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DtFechamentoNegocio = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DtPerdaNegocio = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DtCriacaoOpp = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EstagioProcesso = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
                     DescricaoProjeto = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GerenteConta = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
                     UnidadeNegocios = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Gcom = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
                     Oportunidade = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
-                    TipoConta = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true)
+                    TipoConta = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
+                    LeadFormId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -113,7 +113,7 @@ namespace Api.Migrations
                         column: x => x.LeadFormId,
                         principalTable: "LeadForms",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -122,7 +122,6 @@ namespace Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LeadFormId = table.Column<int>(type: "int", nullable: true),
                     DataEntrada = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EventType = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
                     EventFamily = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
@@ -131,7 +130,8 @@ namespace Api.Migrations
                     TrafficSource = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
                     TrafficMedium = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     TrafficCampaign = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
-                    TrafficValue = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true)
+                    TrafficValue = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
+                    LeadFormId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -141,7 +141,7 @@ namespace Api.Migrations
                         column: x => x.LeadFormId,
                         principalTable: "LeadForms",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -157,13 +157,13 @@ namespace Api.Migrations
             migrationBuilder.CreateIndex(
                 name: "EmailIsUnique",
                 table: "Users",
-                column: "email",
+                column: "Email",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "NameIsUnique",
                 table: "Users",
-                column: "name_view",
+                column: "Name",
                 unique: true);
         }
 

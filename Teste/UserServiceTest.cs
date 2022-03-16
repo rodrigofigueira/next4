@@ -12,7 +12,7 @@ using AutoBogus;
 
 namespace Teste
 {
-    public class UserServiceTest  : IAsyncLifetime
+    public class UserServiceTest
     {
 
         private IUserService _userService; 
@@ -20,19 +20,12 @@ namespace Teste
         public UserServiceTest(){
 
             DbContextOptions<DataContext> options = new DbContextOptionsBuilder<DataContext>()            
-                           .UseSqlServer(connectionString:@"Persist Security Info=False;server=.\SQLEXPRESS2019;database=next4;uid=sa;pwd=sql339023")
+                           .UseInMemoryDatabase("next4_user_service")
                            .Options;
             DataContext dataContext = new DataContext(options);
             this._userService = new UserService(new UserRepository(dataContext));
 
         }
-
-        public async Task DisposeAsync()
-        {
-            await this._userService.DeleteAllThatNameStartsWith("TestUserService");
-        }
-
-        public async Task InitializeAsync(){}                
 
         [Fact]       
         public async Task TestUserServicePostReturnIsNotNull(){

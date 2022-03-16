@@ -4,8 +4,7 @@ namespace Api.Models
 {
     public class LeadRD
     {
-        public int Id { get; set; }
-        public LeadForm LeadForm { get; set; }
+        public int Id { get; set; }        
         public DateTime DataEntrada { get; set; }
         public string EventType { get; set; }
         public string EventFamily { get; set; }
@@ -16,5 +15,7 @@ namespace Api.Models
         public string TrafficCampaign { get; set; }
         public string TrafficValue { get; set; }
 
+        public LeadForm LeadForm { get; set; }
+        public int LeadFormId { get; set; }
     }
 }
