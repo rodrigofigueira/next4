@@ -95,6 +95,8 @@ namespace next4_api
             
             services.AddTransient<IHashSecurityAPIRepository, HashSecurityAPIRepository>();
             services.AddTransient<IHashSecurityAPIService, HashSecurityAPIService>();
+            
+            services.AddTransient<ISimpressService, SimpressService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
