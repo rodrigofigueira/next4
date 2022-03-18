@@ -8,7 +8,7 @@ namespace Api.Interfaces
     {
         public Task<bool> Post(SimpressAccountPost simpressAccountPost);
 
-        public Task<dynamic> Update(dynamic payload);
+        public Task<bool> Patch(string accountId, SimpressAccountPatch simpressAccountPatch);
 
         public Task<SimpressAccountValue> GetById(string id);
         

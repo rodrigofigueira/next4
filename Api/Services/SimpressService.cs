@@ -84,9 +84,21 @@ namespace Api.Services
 
         }
 
-        public Task<dynamic> Update(dynamic payload)
+        public async Task<bool> Patch(string accountId, SimpressAccountPatch simpressAccountPatch)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string url = $@"{urlBase}({accountId})";
+                string payload = JsonConvert.SerializeObject(simpressAccountPatch);
+                StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await clientHttp.PatchAsync(urlBase, content);
+                return response.StatusCode == HttpStatusCode.NoContent ? true : false;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
+
     }
 }

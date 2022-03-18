@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Interfaces;
@@ -36,12 +34,19 @@ namespace Api.Controllers
             return Ok(contato);
         }
 
-
         [HttpPost]
         public async Task<ActionResult> Post(SimpressAccountPost simpressAccount)
         {
             if(await _simpressService.Post(simpressAccount)) return NoContent();
             return BadRequest("Não foi possível realizar o post");
+        }
+
+        [HttpPatch]
+        [Route("Update/{accountId}")]
+        public async Task<ActionResult> Patch([FromRoute] string accountId, SimpressAccountPatch simpressAccountPatch)
+        {
+            if (await _simpressService.Patch(accountId, simpressAccountPatch)) return NoContent();
+            return BadRequest("Não foi possível realizar o patch");
         }
 
     }
