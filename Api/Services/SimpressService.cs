@@ -2,16 +2,30 @@
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Api.Interfaces;
 using Api.Models;
+using Api.Models.DTO.Simpress;
 using Newtonsoft.Json;
 
 namespace Api.Services
 {
     public class SimpressService : ISimpressService
     {
+
+        private HttpClient clientHttp = null;
+        private string urlBase = @"https://apiexterno-hom01.simpress.com.br/camadadeservico/comercial/v9.1/accounts";
+
+        public SimpressService()
+        {
+            clientHttp = new HttpClient();
+            clientHttp.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            clientHttp.DefaultRequestHeaders.Add("client_id", "8b0253c4-6f5c-3234-a2ce-b4c1c6428266");
+            clientHttp.DefaultRequestHeaders.Add("app_token", "35779ed7-46ee-3122-8cff-bd32661dafc2");
+        }
+
         public Task<dynamic> GetByEmail(string email)
         {
             throw new NotImplementedException();
@@ -21,25 +35,15 @@ namespace Api.Services
         {
             try
             {
-                var urlPersonalizada = $@"https://apiexterno-hom01.simpress.com.br/camadadeservico/comercial/v9.1/accounts?$filter=(accountid eq '{id}')";
-                HttpClient client = new HttpClient();
+                string url = $@"{urlBase}?$filter=(accountid eq '{id}')";
+                HttpResponseMessage result = await clientHttp.GetAsync(url);
 
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("client_id", "8b0253c4-6f5c-3234-a2ce-b4c1c6428266");
-                client.DefaultRequestHeaders.Add("app_token", "35779ed7-46ee-3122-8cff-bd32661dafc2");
+                if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception("Account não encontrada");
 
-                var result = await client.GetAsync(urlPersonalizada);
+                string saida = await result.Content.ReadAsStringAsync();
+                SimpressAccount accounts = JsonConvert.DeserializeObject<SimpressAccount>(saida);
+                return accounts.value.FirstOrDefault();
 
-                if (result.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    var saida = await result.Content.ReadAsStringAsync();
-                    var accounts = JsonConvert.DeserializeObject<SimpressAccount>(saida);
-                    return accounts.value.FirstOrDefault();
-                }
-                else
-                {
-                    throw new Exception("Não foi possível inserir");
-                }
             }
             catch (Exception e)
             {
@@ -48,9 +52,20 @@ namespace Api.Services
 
         }
 
-        public Task<dynamic> Post(dynamic payload)
+        public async Task<bool> Post(SimpressAccountPost simpressAccountPost)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string payload = JsonConvert.SerializeObject(simpressAccountPost);
+                StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await clientHttp.PostAsync(urlBase, content);
+                return response.StatusCode == HttpStatusCode.NoContent ? true : false;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
         }
 
         public Task<dynamic> Update(dynamic payload)

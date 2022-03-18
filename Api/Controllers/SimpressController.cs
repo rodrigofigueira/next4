@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Api.Interfaces;
 using Api.Models;
+using Api.Models.DTO.Simpress;
 
 namespace Api.Controllers
 {
@@ -25,5 +26,13 @@ namespace Api.Controllers
             var contato = await _simpressService.GetById(id);
             return Ok(contato);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> Post(SimpressAccountPost simpressAccount)
+        {
+            if(await _simpressService.Post(simpressAccount)) return NoContent();
+            return BadRequest("Não foi possível realizar o post");
+        }
+
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Api.Models;
+using Api.Models.DTO.Simpress;
 using System.Threading.Tasks;
 
 namespace Api.Interfaces
 {
     public interface ISimpressService
     {
-        public Task<dynamic> Post(dynamic payload);
+        public Task<bool> Post(SimpressAccountPost simpressAccountPost);
 
         public Task<dynamic> Update(dynamic payload);
 
