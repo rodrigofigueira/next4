@@ -19,13 +19,23 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SimpressAccountValue>> GetById(string id)
+        [Route("GetById/{id}")]
+        public async Task<ActionResult<SimpressAccountValue>> GetById([FromRoute] string id)
         {
             if (id.Count() < 36) return BadRequest("Id deve ter o seguinte formato: 00000000-0000-0000-0000-000000000000");
 
             var contato = await _simpressService.GetById(id);
             return Ok(contato);
         }
+
+        [HttpGet]
+        [Route("GetByEmail/{email}")]
+        public async Task<ActionResult<SimpressAccountValue>> GetByEmail([FromRoute] string email)
+        {            
+            var contato = await _simpressService.GetByEmail(email);
+            return Ok(contato);
+        }
+
 
         [HttpPost]
         public async Task<ActionResult> Post(SimpressAccountPost simpressAccount)

@@ -26,9 +26,25 @@ namespace Api.Services
             clientHttp.DefaultRequestHeaders.Add("app_token", "35779ed7-46ee-3122-8cff-bd32661dafc2");
         }
 
-        public Task<dynamic> GetByEmail(string email)
+        public async Task<dynamic> GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string url = $@"{urlBase}?$filter=(emailaddress1  eq '{email}')";
+
+                HttpResponseMessage result = await clientHttp.GetAsync(url);
+
+                if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception("Account não encontrada");
+
+                string saida = await result.Content.ReadAsStringAsync();
+                SimpressAccount accounts = JsonConvert.DeserializeObject<SimpressAccount>(saida);
+                return accounts.value.FirstOrDefault();
+
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public async Task<SimpressAccountValue> GetById(string id)
