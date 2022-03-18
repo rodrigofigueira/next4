@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Api.Interfaces;
+using Api.Models;
 using Newtonsoft.Json;
 
 namespace Api.Services
@@ -15,11 +17,11 @@ namespace Api.Services
             throw new NotImplementedException();
         }
 
-        public async Task<dynamic> GetById(string id)
+        public async Task<SimpressAccountValue> GetById(string id)
         {
             try
             {
-                var urlPersonalizada = @"https://apiexterno-hom01.simpress.com.br/camadadeservico/comercial/v9.1/accounts?$filter=(accountid eq '00000000-0000-0000-0000-000000339023')";
+                var urlPersonalizada = $@"https://apiexterno-hom01.simpress.com.br/camadadeservico/comercial/v9.1/accounts?$filter=(accountid eq '{id}')";
                 HttpClient client = new HttpClient();
 
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -31,7 +33,8 @@ namespace Api.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var saida = await result.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject(saida);
+                    var accounts = JsonConvert.DeserializeObject<SimpressAccount>(saida);
+                    return accounts.value.FirstOrDefault();
                 }
                 else
                 {

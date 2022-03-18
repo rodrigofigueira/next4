@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Interfaces;
+using Api.Models;
 
 namespace Api.Controllers
 {
@@ -17,9 +18,11 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetById()
+        public async Task<ActionResult<SimpressAccountValue>> GetById(string id)
         {
-            var contato = await _simpressService.GetById("1");
+            if (id.Count() < 36) return BadRequest("Id deve ter o seguinte formato: 00000000-0000-0000-0000-000000000000");
+
+            var contato = await _simpressService.GetById(id);
             return Ok(contato);
         }
     }

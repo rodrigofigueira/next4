@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Api.Models;
+using System.Threading.Tasks;
 
 namespace Api.Interfaces
 {
@@ -8,7 +9,7 @@ namespace Api.Interfaces
 
         public Task<dynamic> Update(dynamic payload);
 
-        public Task<dynamic> GetById(string id);
+        public Task<SimpressAccountValue> GetById(string id);
         
         public Task<dynamic> GetByEmail(string email);
 
