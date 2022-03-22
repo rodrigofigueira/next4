@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Api.Models
 {
@@ -12,10 +13,12 @@ namespace Api.Models
         public string TelefoneContato { get; set; }
         public string Email { get; set; }
         public string PilarNegocio { get; set; }
-        public int QuantidadeEquipamentos { get; set; }
-        public int VolumeImpressao { get; set; }
+        public string QuantidadeEquipamentos { get; set; }
+        public string VolumeImpressao { get; set; }
         public string Mensagem { get; set; }
         public List<LeadCRM> LeadCRMs { get; set; }
         public List<LeadRD> LeadRDs { get; set; }
+        public DateTime? DataIntegracao { get; set; }
+        public int QuantidadeTentativas { get; set; }
     }
 }

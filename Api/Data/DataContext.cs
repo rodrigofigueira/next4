@@ -125,11 +125,18 @@ namespace Api.Data
             modelBuilder.Entity<LeadForm>().Property<string>(u => u.PilarNegocio)
                                        .HasMaxLength(100);
 
-            modelBuilder.Entity<LeadForm>().Property<int>(u => u.QuantidadeEquipamentos);
+            modelBuilder.Entity<LeadForm>().Property<string>(u => u.QuantidadeEquipamentos)
+                                        .HasMaxLength(200);
 
-            modelBuilder.Entity<LeadForm>().Property<int>(u => u.VolumeImpressao);
+            modelBuilder.Entity<LeadForm>().Property<string>(u => u.VolumeImpressao)
+                                        .HasMaxLength(200);
 
             modelBuilder.Entity<LeadForm>().Property<string>(u => u.Mensagem);
+
+            modelBuilder.Entity<LeadForm>().Property<int>(u => u.QuantidadeTentativas);
+            
+            modelBuilder.Entity<LeadForm>().Property<DateTime?>(u => u.DataIntegracao)
+                                        .IsRequired(false); ;
 
             #endregion
 
