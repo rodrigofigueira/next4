@@ -29,7 +29,7 @@ namespace Api.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Update([FromBody] LeadRD leadRD)
+        public async Task<ActionResult<string>> Update([FromBody] LeadRD leadRD)
         {
             bool inseriu = await _leadRDService.Update(leadRD);
             return inseriu ? Ok("Atualizado") : BadRequest("Ocorreu um erro ao inserir");
@@ -44,7 +44,7 @@ namespace Api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<ActionResult> Delete([FromRoute] int id)
+        public async Task<ActionResult<string>> Delete([FromRoute] int id)
         {
             var deletou = await _leadRDService.Delete(id);
             return deletou ? Ok("Deletado") : BadRequest("Ocorreu um erro ao deletar");
