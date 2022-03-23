@@ -1,4 +1,6 @@
 ﻿using Api.Models;
+using Api.Models.Util;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Api.Interfaces
@@ -12,6 +14,9 @@ namespace Api.Interfaces
         public Task<bool> Delete(int id);
 
         public Task<LeadForm> GetById(int id);
+
+        public Task<ResumoIntegracaoSimpress> IntegrateWithSimpress();
+
     }
 
 }

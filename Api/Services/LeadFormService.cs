@@ -1,5 +1,8 @@
 ﻿using Api.Interfaces;
 using Api.Models;
+using Api.Models.DTO.Simpress;
+using Api.Models.Util;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Api.Repository
@@ -8,16 +11,49 @@ namespace Api.Repository
     {
 
         private readonly ILeadFormRepository _leadFormRepository;
+        private readonly ISimpressService _simpressService;
 
-        public LeadFormService(ILeadFormRepository leadFormRepository)
+        public LeadFormService(ILeadFormRepository leadFormRepository, ISimpressService simpressService)
         {
             this._leadFormRepository = leadFormRepository;
+            this._simpressService = simpressService;
         }
 
         public async Task<bool> Delete(int id)
         {
             bool deletou = await _leadFormRepository.Delete(id);
             return deletou ? true : false;
+        }
+
+        public async Task<ResumoIntegracaoSimpress> IntegrateWithSimpress()
+        {
+            var leadsParaIntegracao = await _leadFormRepository.ToIntegrate();
+            ResumoIntegracaoSimpress resumo = new ResumoIntegracaoSimpress();
+
+            foreach (var lead in leadsParaIntegracao)
+            {
+
+                SimpressAccountPost simpress = new SimpressAccountPost();
+                simpress.name = lead.Nome;
+                simpress.emailaddress1 = lead.Email;
+
+                if (await _simpressService.Post(simpress))
+                {
+                    lead.DataIntegracao = System.DateTime.Now;
+                    resumo.UUIDIntegradas.Add(lead.Id.ToString());
+                }
+                else
+                {
+                    resumo.UUIDNaoIntegradas.Add(lead.Id.ToString());
+                }
+
+                lead.QuantidadeTentativas++;
+                await _leadFormRepository.Update(lead);
+
+            }
+
+            return resumo;
+
         }
 
         public async Task<LeadForm> GetById(int id)

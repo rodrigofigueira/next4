@@ -1,4 +1,5 @@
 ﻿using Api.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Api.Interfaces
@@ -13,5 +14,6 @@ namespace Api.Interfaces
 
         public Task<LeadForm> GetById(int id);
 
+        public Task<List<LeadForm>> ToIntegrate();
     }
 }

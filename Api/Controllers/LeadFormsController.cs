@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Api.Interfaces;
 using System;
+using Api.Models.Util;
 
 namespace Api.Controllers
 {
@@ -44,6 +45,17 @@ namespace Api.Controllers
         {
             var deletou = await _leadFormService.Delete(id);
             return deletou ? Ok("Deletado") : BadRequest("Ocorreu um erro ao deletar");
+        }
+
+        [HttpPost("integration_simpress")]
+        public async Task<ActionResult<string>> IntegrationSimpress()
+        {
+            ResumoIntegracaoSimpress resumoIntegracao = await _leadFormService.IntegrateWithSimpress();
+
+            if (resumoIntegracao.UUIDIntegradas.Count == 0) return BadRequest("Não houve integração");
+            return Ok($@"Total de registros integrados {resumoIntegracao.UUIDIntegradas.Count} \n
+                        Total de registros não integrados {resumoIntegracao.UUIDNaoIntegradas.Count}
+                      ");
         }
 
 

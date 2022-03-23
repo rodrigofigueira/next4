@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Api.Data;
 using Api.Interfaces;
 using Api.Models;
+using System.Collections.Generic;
 
 namespace Api.Repository
 {
@@ -23,6 +24,18 @@ namespace Api.Repository
             _context.LeadForms.Remove(_leadForm);
             int changes = await _context.SaveChangesAsync();
             return changes > 0 ? true : false;
+        }
+
+        /// <summary>
+        /// Retorna os leads recebidos, via Webhook do RD Station, que ainda não foram integrados para a Simpress
+        /// </summary>
+        /// <returns>Lista de LeadForms</returns>
+        public async Task<List<LeadForm>> ToIntegrate()
+        {
+            return await _context.LeadForms
+                                 .Include(l => l.LeadRDs)
+                                 .Where(l => l.DataIntegracao == null && l.QuantidadeTentativas < 3)
+                                 .ToListAsync();
         }
 
         public async Task<LeadForm> GetById(int id)
