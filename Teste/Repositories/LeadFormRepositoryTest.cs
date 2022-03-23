@@ -10,6 +10,8 @@ using System;
 using Api.Interfaces;
 using Xunit;
 using AutoBogus;
+using Xunit.Sdk;
+using Xunit.Abstractions;
 
 namespace Teste
 {
@@ -62,42 +64,7 @@ namespace Teste
             var leadsElegiveisParaIntegracao = await _leadFormRepository.ToIntegrate();
             Assert.True(leadsElegiveisParaIntegracao.Count == totalDeRegistrosParaInserir);
 
-        }
-
-        [Fact]
-        public async Task SemRegistrosElegiveisParaIntegracao()
-        {
-            const int totalDeRegistrosParaInserir = 10;
-
-            var autoFakerLeadRD = new AutoFaker<LeadRD>()
-                                .RuleFor(o => o.Id, f => 0)
-                                .RuleFor(o => o.LeadForm, f => null);
-
-            var autoFakerLeadForm = new AutoFaker<LeadForm>()
-                                .RuleFor(o => o.Id, f => 0)
-                                .RuleFor(o => o.DataIntegracao, f => DateTime.Now)
-                                .RuleFor(o => o.QuantidadeTentativas, f => 10)
-                                .RuleFor(o => o.LeadRDs, f => {
-
-                                    List<LeadRD> leadRDs = new List<LeadRD>();
-                                    for (int i = 0; i < 3; i++)
-                                    {
-                                        leadRDs.Add(autoFakerLeadRD.Generate());
-                                    }
-
-                                    return leadRDs;
-                                });
-
-            for (int i = 0; i < totalDeRegistrosParaInserir; i++)
-            {
-                LeadForm leadForm = autoFakerLeadForm.Generate();
-                await _leadFormRepository.Post(leadForm);
-            }
-
-            var leadsElegiveisParaIntegracao = await _leadFormRepository.ToIntegrate();
-            Assert.True(leadsElegiveisParaIntegracao.Count == 0);
-
-        }
+        }        
 
     }
 }

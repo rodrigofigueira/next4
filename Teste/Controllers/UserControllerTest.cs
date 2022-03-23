@@ -12,10 +12,13 @@ using Api.Models.DTO.User;
 using Api.Repository;
 using Api.Services;
 using Xunit;
+using Xunit.Sdk;
+using Xunit.Abstractions;
+using System.Linq;
 
 namespace Teste
 {
-    public class UserControllerTest
+    public class UserControllerTest : ITestCaseOrderer
     {
 
         IUserRepository userRepository;
@@ -529,6 +532,11 @@ namespace Teste
 
         }
 
-
+        public IEnumerable<TTestCase> OrderTestCases<TTestCase>(IEnumerable<TTestCase> testCases) where TTestCase : ITestCase
+        {
+            var result = testCases.ToList();
+            result.Sort((x, y) => StringComparer.OrdinalIgnoreCase.Compare(x.TestMethod.Method.Name, y.TestMethod.Method.Name));
+            return result;
+        }
     }
 }
