@@ -9,6 +9,7 @@ using Api.Interfaces;
 using Api.Models;
 using Api.Models.DTO.Simpress;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Api.Services
 {
@@ -16,14 +17,17 @@ namespace Api.Services
     {
 
         private HttpClient clientHttp = null;
-        private string urlBase = @"https://apiexterno-hom01.simpress.com.br/camadadeservico/comercial/v9.1/accounts";
+        private string urlBase = null;
+        private IConfiguration _configuration;
 
-        public SimpressService()
+        public SimpressService(IConfiguration configuration)
         {
             clientHttp = new HttpClient();
             clientHttp.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             clientHttp.DefaultRequestHeaders.Add("client_id", "8b0253c4-6f5c-3234-a2ce-b4c1c6428266");
             clientHttp.DefaultRequestHeaders.Add("app_token", "35779ed7-46ee-3122-8cff-bd32661dafc2");
+            _configuration = configuration;
+            urlBase = _configuration["Simpress:UrlAccounts"];
         }
 
         public async Task<dynamic> GetByEmail(string email)
