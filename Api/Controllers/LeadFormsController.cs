@@ -47,7 +47,7 @@ namespace Api.Controllers
             return deletou ? Ok("Deletado") : BadRequest("Ocorreu um erro ao deletar");
         }
 
-        [HttpPost("integration_simpress")]
+        [HttpPost("job/integracaocrm")]
         public async Task<ActionResult<string>> IntegrationSimpress()
         {
             ResumoIntegracaoSimpress resumoIntegracao = await _leadFormService.IntegrateWithSimpress();

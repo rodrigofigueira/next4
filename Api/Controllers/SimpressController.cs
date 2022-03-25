@@ -17,7 +17,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetById/{id}")]
+        [Route("{id}")]
         public async Task<ActionResult<SimpressAccountValue>> GetById([FromRoute] string id)
         {
             if (id.Count() < 36) return BadRequest("Id deve ter o seguinte formato: 00000000-0000-0000-0000-000000000000");
@@ -27,7 +27,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetByEmail/{email}")]
+        [Route("emails/{email}")]
         public async Task<ActionResult<SimpressAccountValue>> GetByEmail([FromRoute] string email)
         {            
             var contato = await _simpressService.GetByEmail(email);
@@ -42,7 +42,7 @@ namespace Api.Controllers
         }
 
         [HttpPatch]
-        [Route("Update/{accountId}")]
+        [Route("{accountId}")]
         public async Task<ActionResult> Patch([FromRoute] string accountId, SimpressAccountPatch simpressAccountPatch)
         {
             if (await _simpressService.Patch(accountId, simpressAccountPatch)) return NoContent();

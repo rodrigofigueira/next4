@@ -43,7 +43,7 @@ namespace Api.Controllers
         /// <param name="user">objeto User com username e password</param>
         /// <returns>UserToken</returns>
         [HttpPost]
-        [Route("login/byusername")]
+        [Route("login/nome")]
         public async Task<ActionResult<UserToken>> LoginByName([FromBody] UserLoginByName user)
         {
             UserToken _user = await _userService.LoginByName(user);
@@ -57,7 +57,7 @@ namespace Api.Controllers
         /// <param name="user">objeto User com login e password</param>
         /// <returns>UserToken</returns>
         [HttpPost]
-        [Route("login/byemail")]
+        [Route("login/email")]
         public async Task<ActionResult<UserToken>> LoginByEmail([FromBody] UserLoginByEmail user)
         {
             UserToken _user = await _userService.LoginByEmail(user);
@@ -100,7 +100,7 @@ namespace Api.Controllers
         /// <returns>Lista de User</returns>
         [Authorize]
         [HttpGet]
-        [Route("getbyemail/{email}")]
+        [Route("emails/{email}")]
         public async Task<ActionResult<List<UserGet>>> GetListByEmailStartsWith([FromRoute] string email){
             
             var users = await _userService.GetByEmail(email);            
