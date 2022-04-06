@@ -1,0 +1,3 @@
+Objeto recebido da API do Simpress em 06/04/2022 
+ {"campo1":"valor1","campo2":2}
+
