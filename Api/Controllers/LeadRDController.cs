@@ -51,7 +51,7 @@ namespace Api.Controllers
         }
       
         [HttpPost]
-        [Route("leadrd/webhook")]
+        [Route("webhook")]
         public async Task<ActionResult> PostRD(dynamic value)
         {
             var jsonSerializado = System.Text.Json.JsonSerializer.Serialize(value);
