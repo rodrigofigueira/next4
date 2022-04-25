@@ -50,7 +50,7 @@ namespace Api.Controllers
         [HttpPost("job/integracaocrm")]
         public async Task<ActionResult<string>> IntegrationSimpress()
         {
-            ResumoIntegracaoSimpress resumoIntegracao = await _leadFormService.IntegrateWithSimpress();
+            ResumoIntegracaoSimpress resumoIntegracao = await _leadFormService.SendLeadToPost();
 
             if (resumoIntegracao.UUIDIntegradas.Count == 0) return BadRequest("Não houve integração");
             return Ok($@"Total de registros integrados {resumoIntegracao.UUIDIntegradas.Count} \n

@@ -30,6 +30,10 @@ namespace Teste.Classes
             return false;
         }
 
+        public Task<bool> PostLead(SimpressLeadPost simpressLeadPost)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 }

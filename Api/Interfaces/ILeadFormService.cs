@@ -17,6 +17,8 @@ namespace Api.Interfaces
 
         public Task<ResumoIntegracaoSimpress> IntegrateWithSimpress();
 
+        public Task<ResumoIntegracaoSimpress> SendLeadToPost();
+
     }
 
 }

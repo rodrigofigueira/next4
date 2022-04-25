@@ -14,6 +14,8 @@ namespace Api.Interfaces
         
         public Task<dynamic> GetByEmail(string email);
 
+        public Task<bool> PostLead(SimpressLeadPost simpressLeadPost);
+
     }
 
 }

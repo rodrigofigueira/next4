@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Api.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
@@ -21,7 +17,6 @@ namespace Api.Services
             this._key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret unguessable key"));
         }
 
-
         public string CreateToken(string userName){
 
             var claims = new List<Claim>{
@@ -32,7 +27,7 @@ namespace Api.Services
 
             var tokenDescriptor = new SecurityTokenDescriptor{
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddMinutes(5),
                 SigningCredentials = creds    
             };
 
