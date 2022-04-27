@@ -30,9 +30,10 @@ namespace Teste.Classes
             return false;
         }
 
-        public Task<bool> PostLead(SimpressLeadPost simpressLeadPost)
+        public async Task<bool> PostLead(SimpressLeadPost simpressLeadPost)
         {
-            throw new System.NotImplementedException();
+            await Task.Delay(100);
+            return true;
         }
     }
 
