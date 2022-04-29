@@ -92,7 +92,13 @@ namespace Api.Services
         {
             try
             {
-                string payload = JsonConvert.SerializeObject(simpressLeadPost);
+                string payload = JsonConvert.SerializeObject(simpressLeadPost,
+                    Newtonsoft.Json.Formatting.None,
+                    new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
                 StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
                 urlBase = _configuration["Simpress:UrlLead"];
                 HttpResponseMessage response = await clientHttp.PostAsync(urlBase, content);
